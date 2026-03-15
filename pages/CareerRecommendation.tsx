@@ -1,11 +1,164 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUpRight, ShieldCheck, DollarSign, BrainCircuit, Loader2, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, DollarSign, BrainCircuit, Loader2, RefreshCw, ChevronDown, ChevronUp, Calendar, BookOpen, Rocket, CheckCircle2, Code, Target, Zap } from 'lucide-react';
 import { getCareerRecommendations, generateCareerRoadmap } from '../services/geminiService';
 import { useUserData } from '../contexts/UserDataContext';
 import { useCache } from '../contexts/CacheContext';
 import FeatureGate, { useProfileGateRequirements } from '../components/FeatureGate';
 import type { Career } from '../types';
 
+// ============================================================
+// Roadmap text parser -- turns AI-generated text into sections
+// ============================================================
+interface RoadmapSection {
+  title: string;
+  items: string[];
+}
+
+function parseRoadmapText(text: string): RoadmapSection[] {
+  const sections: RoadmapSection[] = [];
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+  let current: RoadmapSection | null = null;
+
+  for (const line of lines) {
+    // Detect section headers:
+    //   "**Month 1: ...**", "## Month 1", "Month 1:", "Phase 1:", "Week 1-2:", etc.
+    const headerMatch = line.match(
+      /^(?:\*\*|#{1,3}\s*)?(?:Month\s*\d+|Phase\s*\d+|Week\s*[\d\-]+|Step\s*\d+|Quarter\s*\d+)\s*[:–\-]?\s*(.*?)(?:\*\*)?$/i
+    );
+
+    // Also match generic bold headers like "**Foundation & Setup**"
+    const boldHeaderMatch = !headerMatch && line.match(/^\*\*(.+?)\*\*\s*$/);
+
+    // Also match markdown headers like "## Something" or "### Something"
+    const mdHeaderMatch = !headerMatch && !boldHeaderMatch && line.match(/^#{1,3}\s+(.+)$/);
+
+    if (headerMatch) {
+      if (current && current.items.length > 0) sections.push(current);
+      const suffix = headerMatch[1]?.replace(/\*+/g, '').trim();
+      const prefix = line.match(/(?:Month\s*\d+|Phase\s*\d+|Week\s*[\d\-]+|Step\s*\d+|Quarter\s*\d+)/i)?.[0] || '';
+      current = {
+        title: suffix ? `${prefix}${suffix ? ': ' + suffix : ''}` : prefix,
+        items: [],
+      };
+    } else if (boldHeaderMatch || mdHeaderMatch) {
+      if (current && current.items.length > 0) sections.push(current);
+      current = {
+        title: (boldHeaderMatch?.[1] || mdHeaderMatch?.[1] || '').trim(),
+        items: [],
+      };
+    } else {
+      // Clean up bullet points
+      const cleaned = line
+        .replace(/^[\-\*•]\s*/, '')
+        .replace(/^\d+\.\s*/, '')
+        .replace(/\*\*/g, '')
+        .trim();
+
+      if (cleaned) {
+        if (!current) {
+          current = { title: 'Getting Started', items: [] };
+        }
+        current.items.push(cleaned);
+      }
+    }
+  }
+
+  if (current && current.items.length > 0) sections.push(current);
+
+  // Fallback: if parsing found nothing useful, create one section with all content
+  if (sections.length === 0 && text.trim()) {
+    const allItems = text
+      .split('\n')
+      .map(l => l.trim().replace(/^[\-\*•]\s*/, '').replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim())
+      .filter(Boolean);
+    if (allItems.length > 0) {
+      sections.push({ title: 'Roadmap', items: allItems });
+    }
+  }
+
+  return sections;
+}
+
+// Section icons based on index
+const sectionIcons = [
+  <BookOpen size={18} />,
+  <Code size={18} />,
+  <Target size={18} />,
+  <Rocket size={18} />,
+  <Zap size={18} />,
+  <CheckCircle2 size={18} />,
+];
+
+const sectionColors = [
+  { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200', dot: 'bg-blue-500', light: 'bg-blue-100' },
+  { bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-200', dot: 'bg-purple-500', light: 'bg-purple-100' },
+  { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200', dot: 'bg-emerald-500', light: 'bg-emerald-100' },
+  { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200', dot: 'bg-orange-500', light: 'bg-orange-100' },
+  { bg: 'bg-pink-50', text: 'text-pink-600', border: 'border-pink-200', dot: 'bg-pink-500', light: 'bg-pink-100' },
+  { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-200', dot: 'bg-cyan-500', light: 'bg-cyan-100' },
+];
+
+// ============================================================
+// Roadmap Timeline Component
+// ============================================================
+const RoadmapTimeline: React.FC<{ content: string }> = ({ content }) => {
+  const sections = parseRoadmapText(content);
+
+  if (sections.length === 0) {
+    return (
+      <div className="p-4 text-sm text-slate-500 italic">
+        No roadmap content available.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-0">
+      {sections.map((section, idx) => {
+        const color = sectionColors[idx % sectionColors.length];
+        const icon = sectionIcons[idx % sectionIcons.length];
+        const isLast = idx === sections.length - 1;
+
+        return (
+          <div key={idx} className="relative flex gap-3 sm:gap-5">
+            {/* Timeline line + dot */}
+            <div className="flex flex-col items-center flex-shrink-0">
+              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${color.light} ${color.text} flex items-center justify-center flex-shrink-0 z-10 shadow-sm`}>
+                {icon}
+              </div>
+              {!isLast && (
+                <div className="w-0.5 flex-1 bg-slate-200 my-1"></div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className={`flex-1 pb-6 ${isLast ? 'pb-0' : ''}`}>
+              <div className={`${color.bg} border ${color.border} rounded-xl sm:rounded-2xl p-3 sm:p-5`}>
+                <h4 className={`font-bold ${color.text} text-sm sm:text-base mb-3 flex items-center gap-2`}>
+                  <Calendar size={14} className="flex-shrink-0 opacity-60" />
+                  {section.title}
+                </h4>
+                <ul className="space-y-2">
+                  {section.items.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                      <div className={`w-1.5 h-1.5 rounded-full ${color.dot} flex-shrink-0 mt-1.5`}></div>
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ============================================================
+// Main Component
+// ============================================================
 const CareerRecommendation: React.FC = () => {
   const { profile } = useUserData();
   const { cache, setCareers: cacheCareers, setRoadmap: cacheRoadmap } = useCache();
@@ -139,39 +292,67 @@ const CareerRecommendation: React.FC = () => {
                   {career.roadmap && career.roadmap.length > 0 && (
                     <div className="mb-6">
                       <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Quick Roadmap</h4>
-                      <ol className="space-y-2">
+                      <div className="space-y-2.5">
                         {career.roadmap.slice(0, 3).map((step, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                            <span className="w-5 h-5 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center font-bold flex-shrink-0 text-[10px]">{i + 1}</span>
-                            {step}
-                          </li>
+                          <div key={i} className="flex items-start gap-2.5">
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold flex-shrink-0 text-[10px] ${
+                              i === 0 ? 'bg-blue-100 text-blue-600' :
+                              i === 1 ? 'bg-purple-100 text-purple-600' :
+                              'bg-emerald-100 text-emerald-600'
+                            }`}>
+                              {i + 1}
+                            </div>
+                            <span className="text-xs text-slate-600 leading-relaxed pt-0.5">{step}</span>
+                          </div>
                         ))}
-                      </ol>
+                        {career.roadmap.length > 3 && (
+                          <p className="text-[10px] text-slate-400 font-medium pl-8">+{career.roadmap.length - 3} more steps...</p>
+                        )}
+                      </div>
                     </div>
                   )}
 
                   <div className="mt-auto">
                     <button
                       onClick={() => handleViewRoadmap(career)}
-                      className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors"
+                      className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors ${
+                        expandedRoadmap === career.id
+                          ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+                          : 'bg-slate-900 text-white hover:bg-blue-600'
+                      }`}
                     >
-                      {expandedRoadmap === career.id ? 'Hide' : 'View Full'} Roadmap
+                      <Rocket size={16} />
+                      {expandedRoadmap === career.id ? 'Hide Roadmap' : 'View Full Roadmap'}
                       {expandedRoadmap === career.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                   </div>
                 </div>
 
-                {/* Expanded roadmap */}
+                {/* Expanded full roadmap */}
                 {expandedRoadmap === career.id && (
-                  <div className="p-6 border-t border-slate-100 bg-slate-50 animate-in fade-in duration-300">
+                  <div className="border-t border-slate-100 bg-slate-50/70 animate-in fade-in slide-in-from-top-2 duration-300">
                     {loadingRoadmap === career.id ? (
-                      <div className="flex items-center gap-3 justify-center py-8">
-                        <Loader2 size={20} className="animate-spin text-blue-600" />
-                        <span className="text-sm text-slate-500">Generating detailed roadmap...</span>
+                      <div className="flex flex-col items-center justify-center py-12 gap-3">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-30"></div>
+                          <div className="relative w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center">
+                            <Loader2 size={24} className="animate-spin text-blue-600" />
+                          </div>
+                        </div>
+                        <span className="text-sm text-slate-500 font-medium">Generating your personalized roadmap...</span>
                       </div>
                     ) : roadmapContent[career.id] ? (
-                      <div className="prose prose-sm max-w-none text-slate-700">
-                        <pre className="whitespace-pre-wrap text-xs font-medium leading-relaxed bg-white p-4 rounded-xl border border-slate-100">{roadmapContent[career.id]}</pre>
+                      <div className="p-4 sm:p-6">
+                        <div className="flex items-center gap-2 mb-5">
+                          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                            <Rocket size={16} />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-sm sm:text-base">6-Month Roadmap</h4>
+                            <p className="text-[10px] sm:text-xs text-slate-400 font-medium">Personalized plan to become a {career.title}</p>
+                          </div>
+                        </div>
+                        <RoadmapTimeline content={roadmapContent[career.id]} />
                       </div>
                     ) : null}
                   </div>
