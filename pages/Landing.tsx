@@ -14,8 +14,13 @@ import {
   Trophy,
   BrainCircuit,
   TrendingUp,
-  PlayCircle
+  PlayCircle,
+  Users,
+  Award,
+  BookOpen,
+  BarChart3
 } from 'lucide-react';
+import AnimatedHeading from '../components/AnimatedHeading';
 
 const Landing: React.FC = () => {
   return (
@@ -36,7 +41,6 @@ const Landing: React.FC = () => {
         <div className="hidden lg:flex items-center gap-10">
           <a href="#features" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Platform</a>
           <a href="#solutions" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Solutions</a>
-          <a href="#pricing" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Pricing</a>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/login" className="hidden sm:block text-slate-700 font-bold px-4 py-2 hover:text-blue-600 transition-colors">Log in</Link>
@@ -52,15 +56,22 @@ const Landing: React.FC = () => {
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-black uppercase tracking-widest mb-6 sm:mb-8 animate-in slide-in-from-top-4 duration-1000">
               <Sparkles size={14} />
-              <span>Version 2.0 Now Live</span>
+              <span>AI-Powered Career Platform</span>
             </div>
-            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] mb-6 sm:mb-8 tracking-tighter">
+
+            <AnimatedHeading
+              as="h1"
+              className="text-4xl sm:text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] mb-6 sm:mb-8 tracking-tighter"
+              letterDelay={25}
+              startDelay={200}
+            >
               Build your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Dream Career</span> <br />
               with AI.
-            </h1>
+            </AnimatedHeading>
+
             <p className="text-base sm:text-xl text-slate-500 mb-8 sm:mb-12 leading-relaxed max-w-lg font-medium">
-              The world's most intelligent career companion. Assess your skills, bridge your gaps, and land roles at top-tier tech companies.
+              Your intelligent career companion. Assess skills, bridge gaps, ace interviews, and land roles at companies you love.
             </p>
             <div className="flex flex-col sm:flex-row gap-5">
               <Link to="/signup" className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-base sm:text-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-2xl shadow-blue-600/30">
@@ -68,12 +79,19 @@ const Landing: React.FC = () => {
               </Link>
               <div className="flex items-center gap-4 px-6">
                 <div className="flex -space-x-3">
-                  {[1,2,3].map(i => (
-                    <img key={i} src={`https://picsum.photos/seed/${i+100}/40/40`} className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="User" />
+                  {/* User avatars as initials instead of external images */}
+                  {['A', 'R', 'S'].map((initial, i) => (
+                    <div key={i} className={`w-10 h-10 rounded-full border-2 border-white shadow-sm flex items-center justify-center font-bold text-sm ${
+                      i === 0 ? 'bg-blue-100 text-blue-600' :
+                      i === 1 ? 'bg-purple-100 text-purple-600' :
+                      'bg-emerald-100 text-emerald-600'
+                    }`}>
+                      {initial}
+                    </div>
                   ))}
                 </div>
                 <div className="text-sm font-bold text-slate-500">
-                  <span className="text-slate-900">12k+</span> users already joined
+                  <span className="text-slate-900">Join</span> students & professionals
                 </div>
               </div>
             </div>
@@ -101,46 +119,48 @@ const Landing: React.FC = () => {
               </div>
             </div>
 
-            {/* Floating Elements */}
+            {/* Floating: Skill Score card */}
             <div className="absolute top-10 right-0 bg-white p-6 rounded-3xl shadow-2xl border border-slate-50 animate-float w-64 transform translate-z-50">
                <div className="flex items-center gap-4 mb-4">
                  <div className="bg-green-100 p-2.5 rounded-2xl text-green-600"><Trophy size={24} /></div>
                  <div>
                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Skill Score</p>
-                   <p className="text-2xl font-black text-slate-900">94.2%</p>
+                   <p className="text-2xl font-black text-slate-900">Track Yours</p>
                  </div>
                </div>
                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                 <div className="bg-green-500 h-full w-[94%]"></div>
+                 <div className="bg-green-500 h-full w-[70%] animate-pulse"></div>
                </div>
             </div>
 
+            {/* Floating: Job card */}
             <div className="absolute bottom-10 left-[-20px] bg-slate-900 p-6 rounded-[2.5rem] shadow-2xl text-white animate-float-delayed w-72 transform translate-z-100">
                <div className="flex items-center gap-4">
-                 <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center font-black">G</div>
+                 <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
+                   <Briefcase size={20} />
+                 </div>
                  <div>
-                   <p className="text-sm font-bold">Frontend Engineer</p>
-                   <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Google Inc.</p>
+                   <p className="text-sm font-bold">Your Dream Role</p>
+                   <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Matched by AI</p>
                  </div>
                </div>
                <button className="w-full mt-4 py-3 bg-blue-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-blue-500 transition-colors">
-                 Quick Apply
+                 View Matches
                </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Partners / Ticker */}
+      {/* Tech Stack Ticker */}
       <section className="py-12 border-y border-slate-100 bg-white/50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10">Trusted by students from</p>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-            <span className="text-2xl font-black tracking-tighter text-slate-900">MICROSOFT</span>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">ADOBE</span>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">AMAZON</span>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">INTEL</span>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">STRIPE</span>
+          <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10">Powered by Modern Technology</p>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50">
+            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-700 flex items-center gap-2"><Sparkles size={18} className="text-blue-500" /> Google Gemini AI</span>
+            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-700 flex items-center gap-2"><Zap size={18} className="text-emerald-500" /> React + Vite</span>
+            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-700 flex items-center gap-2"><BarChart3 size={18} className="text-purple-500" /> Supabase</span>
+            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-700 flex items-center gap-2"><Target size={18} className="text-orange-500" /> Tailwind CSS</span>
           </div>
         </div>
       </section>
@@ -150,8 +170,15 @@ const Landing: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-20">
             <div className="max-w-2xl">
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight leading-[0.9]">Everything you need to <span className="text-blue-600">Level Up.</span></h2>
-              <p className="text-lg text-slate-500 font-medium leading-relaxed">We've combined the power of generative AI with career psychology to build a platform that actually works.</p>
+              <AnimatedHeading
+                as="h2"
+                className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight leading-[0.9]"
+                letterDelay={20}
+                startDelay={100}
+              >
+                Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Level Up.</span>
+              </AnimatedHeading>
+              <p className="text-lg text-slate-500 font-medium leading-relaxed">AI-powered tools designed to take you from learning to landing your dream job.</p>
             </div>
             <Link to="/assessment" className="flex items-center gap-3 text-blue-600 font-black uppercase tracking-widest text-sm hover:translate-x-2 transition-transform">
               Explore All Tools <ArrowRight size={20} />
@@ -167,12 +194,13 @@ const Landing: React.FC = () => {
                   <Target size={32} />
                 </div>
                 <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Adaptive Skill <br /> Assessment</h3>
-                <p className="text-slate-500 max-w-sm font-medium">Industry-standard MCQ tests that adapt to your performance level in real-time.</p>
+                <p className="text-slate-500 max-w-sm font-medium">AI-generated MCQ tests that adapt to your chosen difficulty and topic in real-time.</p>
               </div>
-              <div className="relative z-10 flex gap-4">
+              <div className="relative z-10 flex gap-4 flex-wrap">
                 <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase">React</span>
                 <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase">Python</span>
-                <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase">System Design</span>
+                <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase">DSA</span>
+                <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase">+ More</span>
               </div>
             </div>
 
@@ -186,7 +214,7 @@ const Landing: React.FC = () => {
                </div>
                <div>
                  <h3 className="text-2xl font-black mb-2 tracking-tight">AI Interviews</h3>
-                 <p className="text-slate-400 text-sm font-medium">Practice with our real-time specialized AI bot.</p>
+                 <p className="text-slate-400 text-sm font-medium">Practice with a role-specific AI interviewer and get instant feedback.</p>
                </div>
             </div>
 
@@ -196,8 +224,8 @@ const Landing: React.FC = () => {
                  <Briefcase size={28} />
                </div>
                <div>
-                 <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Match Engine</h3>
-                 <p className="text-slate-500 text-sm font-medium">92% accuracy in predicting your success in specific roles.</p>
+                 <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Real Job Board</h3>
+                 <p className="text-slate-500 text-sm font-medium">Live jobs scraped from LinkedIn, Naukri, Unstop & Glassdoor, matched to your skills.</p>
                </div>
             </div>
 
@@ -208,16 +236,13 @@ const Landing: React.FC = () => {
                 <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6">
                   <FileText size={28} />
                 </div>
-                <h3 className="text-2xl font-black mb-2 tracking-tight">ATS-Beating Resume</h3>
-                <p className="text-indigo-100 text-sm font-medium leading-relaxed">Instant feedback on your resume structure and keywords.</p>
+                <h3 className="text-2xl font-black mb-2 tracking-tight">Smart Resume Analysis</h3>
+                <p className="text-indigo-100 text-sm font-medium leading-relaxed">AI extracts your skills, experience, and auto-fills your profile from a PDF upload.</p>
               </div>
               <div className="relative z-10 mt-6">
-                <div className="flex justify-between text-[10px] font-black uppercase mb-1">
-                  <span>ATS Match Rate</span>
-                  <span>88%</span>
-                </div>
-                <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white w-[88%]"></div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 size={16} className="text-indigo-200" />
+                  <span className="text-xs font-bold text-indigo-200">Auto-fill profile from resume</span>
                 </div>
               </div>
             </div>
@@ -228,8 +253,8 @@ const Landing: React.FC = () => {
                 <Zap size={28} />
               </div>
               <div>
-                <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Curated Paths</h3>
-                <p className="text-slate-500 text-sm font-medium">Courses mapped directly to your missing skills.</p>
+                <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Curated Learning</h3>
+                <p className="text-slate-500 text-sm font-medium">Courses, YouTube videos, and resources mapped to your skill gaps.</p>
               </div>
             </div>
           </div>
@@ -240,8 +265,15 @@ const Landing: React.FC = () => {
       <section id="solutions" className="py-16 sm:py-32 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-24">
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tighter">Your path to <span className="text-blue-600 underline decoration-blue-200">Employment</span></h2>
-            <p className="text-lg text-slate-500 font-medium">Three simple steps to transition from student to professional.</p>
+            <AnimatedHeading
+              as="h2"
+              className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tighter"
+              letterDelay={22}
+              startDelay={100}
+            >
+              Your path to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Employment</span>
+            </AnimatedHeading>
+            <p className="text-lg text-slate-500 font-medium">Three steps to go from student to job-ready professional.</p>
           </div>
 
           <div className="relative">
@@ -253,22 +285,22 @@ const Landing: React.FC = () => {
             <div className="space-y-16 sm:space-y-32">
               <StepRow 
                 number="01" 
-                title="Identify Your Gaps" 
-                desc="Take the AI-powered assessment and upload your resume. We create a detailed map of where you stand."
+                title="Assess & Analyze" 
+                desc="Take AI-powered skill assessments and upload your resume. We map exactly where you stand."
                 align="left"
                 icon={<Search size={32} />}
               />
               <StepRow 
                 number="02" 
-                title="Bridge with Courses" 
-                desc="Access custom learning paths from Coursera and Udemy. Only learn what you actually need."
+                title="Learn & Build" 
+                desc="Get AI-curated courses and resources. Practice with mock interviews. Only learn what matters."
                 align="right"
                 icon={<PlayCircle size={32} />}
               />
               <StepRow 
                 number="03" 
-                title="Land Your Dream Role" 
-                desc="Apply through our matched job board with a high-strength resume and practice mock interviews."
+                title="Apply & Land" 
+                desc="Browse real job listings matched to your profile. Apply with confidence backed by data."
                 align="left"
                 icon={<TrendingUp size={32} />}
               />
@@ -277,39 +309,36 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* Modern CTA */}
+      {/* Feature Highlights CTA */}
       <section className="py-12 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="bg-[#0f172a] rounded-2xl sm:rounded-[4rem] p-6 sm:p-12 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(37,99,235,0.2)]">
             <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[160px] opacity-20"></div>
-            <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div>
-                <h2 className="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 sm:mb-8 tracking-tighter leading-none">Ready to start <br /> your story?</h2>
-                <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed mb-6 sm:mb-10 max-w-md">Join 12,000+ students building their careers with SkillTrack AI today.</p>
+                <AnimatedHeading
+                  as="h2"
+                  className="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 sm:mb-8 tracking-tighter leading-none"
+                  letterDelay={25}
+                  startDelay={150}
+                >
+                  Ready to start your story?
+                </AnimatedHeading>
+                <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed mb-6 sm:mb-10 max-w-md">
+                  Join students and professionals building their careers with SkillTrack AI. Free to get started.
+                </p>
                 <Link to="/signup" className="inline-flex items-center gap-3 sm:gap-4 bg-white text-slate-900 px-8 sm:px-12 py-4 sm:py-5 rounded-xl sm:rounded-[2rem] font-black text-base sm:text-xl hover:bg-blue-50 transition-all hover:scale-105 shadow-2xl active:scale-95">
                   Get Free Access <ArrowRight />
                 </Link>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <div className="h-40 bg-white/5 backdrop-blur rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center">
-                    <p className="text-3xl font-black text-white">92%</p>
-                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">Placement Rate</p>
-                  </div>
-                  <div className="h-56 bg-white/5 backdrop-blur rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center">
-                    <p className="text-3xl font-black text-white">2.4k+</p>
-                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">Roles Filled</p>
-                  </div>
+                  <FeatureCard icon={<Target size={24} />} label="Skill Assessments" desc="AI-generated quizzes" />
+                  <FeatureCard icon={<FileText size={24} />} label="Resume Analysis" desc="PDF parsing + insights" tall />
                 </div>
                 <div className="space-y-4 pt-12">
-                  <div className="h-56 bg-blue-600 rounded-3xl flex flex-col items-center justify-center p-6 text-center shadow-2xl shadow-blue-600/30">
-                    <p className="text-3xl font-black text-white">850+</p>
-                    <p className="text-[10px] text-blue-200 font-black uppercase tracking-widest mt-2">Hiring Partners</p>
-                  </div>
-                  <div className="h-40 bg-white/5 backdrop-blur rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center">
-                    <p className="text-3xl font-black text-white">4.9/5</p>
-                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">User Rating</p>
-                  </div>
+                  <FeatureCard icon={<BrainCircuit size={24} />} label="Mock Interviews" desc="Role-specific AI practice" tall highlight />
+                  <FeatureCard icon={<Briefcase size={24} />} label="Job Matching" desc="Real listings, skill-matched" />
                 </div>
               </div>
             </div>
@@ -325,43 +354,45 @@ const Landing: React.FC = () => {
               <div className="bg-blue-600 text-white font-black p-1.5 rounded-xl">ST</div>
               <span className="text-2xl font-black text-slate-900 tracking-tight">SkillTrack</span>
             </div>
-            <p className="text-slate-500 text-lg max-w-sm font-medium leading-relaxed">Revolutionizing the bridge between academia and industry with the world's most intelligent career companion.</p>
+            <p className="text-slate-500 text-lg max-w-sm font-medium leading-relaxed">An AI-powered career companion that helps you assess skills, bridge gaps, and land your dream role.</p>
             <div className="flex gap-6 mt-10">
-              <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors border border-slate-100"><Sparkles size={18} /></a>
-              <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors border border-slate-100"><Zap size={18} /></a>
-              <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors border border-slate-100"><ArrowRight size={18} /></a>
+              <a href="#features" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors border border-slate-100"><Sparkles size={18} /></a>
+              <a href="#solutions" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors border border-slate-100"><Zap size={18} /></a>
             </div>
           </div>
           <div>
             <h4 className="text-xs font-black text-slate-900 mb-8 uppercase tracking-[0.3em]">Platform</h4>
             <ul className="space-y-4 text-slate-500 font-bold text-sm">
-              <li><Link to="/assessment" className="hover:text-blue-600">Skill Tests</Link></li>
-              <li><Link to="/resume" className="hover:text-blue-600">Resume AI</Link></li>
-              <li><Link to="/jobs" className="hover:text-blue-600">Job Board</Link></li>
-              <li><Link to="/mock" className="hover:text-blue-600">Mock Interviews</Link></li>
+              <li><Link to="/assessment" className="hover:text-blue-600 transition-colors">Skill Tests</Link></li>
+              <li><Link to="/resume" className="hover:text-blue-600 transition-colors">Resume AI</Link></li>
+              <li><Link to="/jobs" className="hover:text-blue-600 transition-colors">Job Board</Link></li>
+              <li><Link to="/mock" className="hover:text-blue-600 transition-colors">Mock Interviews</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-black text-slate-900 mb-8 uppercase tracking-[0.3em]">Company</h4>
+            <h4 className="text-xs font-black text-slate-900 mb-8 uppercase tracking-[0.3em]">Resources</h4>
             <ul className="space-y-4 text-slate-500 font-bold text-sm">
-              <li><a href="#" className="hover:text-blue-600">About Us</a></li>
-              <li><a href="#" className="hover:text-blue-600">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-blue-600">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-blue-600">Contact Support</a></li>
+              <li><Link to="/careers" className="hover:text-blue-600 transition-colors">Career Paths</Link></li>
+              <li><Link to="/gaps" className="hover:text-blue-600 transition-colors">Skill Gap Analysis</Link></li>
+              <li><Link to="/learning" className="hover:text-blue-600 transition-colors">Learning Hub</Link></li>
+              <li><Link to="/profile" className="hover:text-blue-600 transition-colors">Your Profile</Link></li>
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-24 pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">© 2025 SkillTrack AI. Developed by Human Engineers.</p>
+        <div className="max-w-7xl mx-auto mt-16 sm:mt-24 pt-8 sm:pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">&copy; {new Date().getFullYear()} SkillTrack AI. College Project.</p>
           <div className="flex gap-8 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <span>Built with React + Gemini</span>
-            <span>Final Project Showcase</span>
+            <span>React + Gemini AI + Supabase</span>
           </div>
         </div>
       </footer>
     </div>
   );
 };
+
+// ============================================================
+// Sub-components
+// ============================================================
 
 const StepRow = ({ number, title, desc, align, icon }: { number: string, title: string, desc: string, align: 'left' | 'right', icon: React.ReactNode }) => (
   <div className={`flex flex-col md:flex-row items-center gap-8 md:gap-24 ${align === 'right' ? 'md:flex-row-reverse' : ''}`}>
@@ -377,6 +408,20 @@ const StepRow = ({ number, title, desc, align, icon }: { number: string, title: 
       </div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 sm:w-80 h-52 sm:h-80 bg-blue-50/50 rounded-full blur-3xl -z-0"></div>
     </div>
+  </div>
+);
+
+const FeatureCard = ({ icon, label, desc, tall, highlight }: { icon: React.ReactNode; label: string; desc: string; tall?: boolean; highlight?: boolean }) => (
+  <div className={`${tall ? 'h-44 sm:h-56' : 'h-32 sm:h-40'} ${
+    highlight
+      ? 'bg-blue-600 shadow-2xl shadow-blue-600/30'
+      : 'bg-white/5 backdrop-blur border border-white/10'
+  } rounded-2xl sm:rounded-3xl flex flex-col items-center justify-center p-4 sm:p-6 text-center`}>
+    <div className={`mb-3 ${highlight ? 'text-white' : 'text-blue-400'}`}>{icon}</div>
+    <p className={`text-sm sm:text-base font-black ${highlight ? 'text-white' : 'text-white'}`}>{label}</p>
+    <p className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest mt-1 ${
+      highlight ? 'text-blue-200' : 'text-slate-400'
+    }`}>{desc}</p>
   </div>
 );
 
