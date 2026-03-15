@@ -129,9 +129,19 @@ const Profile: React.FC = () => {
               )}
             </div>
           </div>
-          <div className="mb-0 sm:mb-4 space-y-1 text-center sm:text-left">
+          <div className="mb-0 sm:mb-4 space-y-1 text-center sm:text-left min-w-0">
             <div className="flex items-center gap-3 justify-center sm:justify-start">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 sm:text-white sm:drop-shadow-sm">{displayName}</h1>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  placeholder="Enter your full name"
+                  className="text-2xl sm:text-3xl font-bold bg-white/90 sm:bg-white/20 text-slate-900 sm:text-white sm:placeholder-white/50 placeholder-slate-400 border border-slate-200 sm:border-white/30 rounded-xl px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/30 w-full max-w-xs sm:max-w-sm backdrop-blur-md"
+                />
+              ) : (
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 sm:text-white sm:drop-shadow-sm">{displayName}</h1>
+              )}
             </div>
             <p className="text-slate-500 sm:text-blue-50 font-medium text-sm sm:text-base">{formData.target_role || 'Set your target role in edit mode'}</p>
           </div>
@@ -159,6 +169,11 @@ const Profile: React.FC = () => {
           <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
             <h3 className="text-lg font-bold text-slate-900 mb-4 sm:mb-6">Contact Information</h3>
             <div className="space-y-4">
+              {isEditing ? (
+                <EditableField icon={<Edit3 size={18} />} label="Full Name" value={formData.full_name} onChange={(v) => setFormData({ ...formData, full_name: v })} placeholder="Enter your full name" />
+              ) : (
+                <ContactItem icon={<Edit3 size={18} />} label="Full Name" value={formData.full_name || 'Not set'} />
+              )}
               <ContactItem icon={<Mail size={18} />} label="Email" value={user?.email || ''} />
               {isEditing ? (
                 <>
