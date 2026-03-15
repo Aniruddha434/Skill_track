@@ -28,42 +28,42 @@ const Landing: React.FC = () => {
       </div>
 
       {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 md:px-12 py-6 max-w-7xl mx-auto sticky top-0 bg-white/70 backdrop-blur-xl z-50 border-b border-slate-100/50">
+      <nav className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 sm:py-6 max-w-7xl mx-auto sticky top-0 bg-white/70 backdrop-blur-xl z-50 border-b border-slate-100/50">
         <div className="flex items-center gap-2 group cursor-pointer">
           <div className="bg-blue-600 text-white font-black p-1.5 rounded-xl shadow-lg shadow-blue-600/20 group-hover:rotate-12 transition-transform duration-300">ST</div>
-          <span className="text-2xl font-black text-slate-900 tracking-tight">SkillTrack</span>
+          <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">SkillTrack</span>
         </div>
         <div className="hidden lg:flex items-center gap-10">
           <a href="#features" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Platform</a>
           <a href="#solutions" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Solutions</a>
           <a href="#pricing" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors uppercase tracking-widest">Pricing</a>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/login" className="hidden sm:block text-slate-700 font-bold px-4 py-2 hover:text-blue-600 transition-colors">Log in</Link>
-          <Link to="/signup" className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-xl hover:shadow-blue-600/20 active:scale-95">
+          <Link to="/signup" className="bg-slate-900 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base hover:bg-blue-600 transition-all shadow-xl hover:shadow-blue-600/20 active:scale-95">
             Join Now
           </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-16 pb-24 z-10 px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+      <section className="relative pt-10 sm:pt-16 pb-16 sm:pb-24 z-10 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-black uppercase tracking-widest mb-8 animate-in slide-in-from-top-4 duration-1000">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-black uppercase tracking-widest mb-6 sm:mb-8 animate-in slide-in-from-top-4 duration-1000">
               <Sparkles size={14} />
               <span>Version 2.0 Now Live</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] mb-8 tracking-tighter">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] mb-6 sm:mb-8 tracking-tighter">
               Build your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Dream Career</span> <br />
               with AI.
             </h1>
-            <p className="text-xl text-slate-500 mb-12 leading-relaxed max-w-lg font-medium">
+            <p className="text-base sm:text-xl text-slate-500 mb-8 sm:mb-12 leading-relaxed max-w-lg font-medium">
               The world's most intelligent career companion. Assess your skills, bridge your gaps, and land roles at top-tier tech companies.
             </p>
             <div className="flex flex-col sm:flex-row gap-5">
-              <Link to="/signup" className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-[2rem] font-black text-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-2xl shadow-blue-600/30">
+              <Link to="/signup" className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-base sm:text-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-2xl shadow-blue-600/30">
                 Get Started Free <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <div className="flex items-center gap-4 px-6">
@@ -146,11 +146,11 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Bento Grid Features Section */}
-      <section id="features" className="py-32 px-6 bg-slate-50/50">
+      <section id="features" className="py-16 sm:py-32 px-4 sm:px-6 bg-slate-50/50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-20">
             <div className="max-w-2xl">
-              <h2 className="text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-[0.9]">Everything you need to <span className="text-blue-600">Level Up.</span></h2>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight leading-[0.9]">Everything you need to <span className="text-blue-600">Level Up.</span></h2>
               <p className="text-lg text-slate-500 font-medium leading-relaxed">We've combined the power of generative AI with career psychology to build a platform that actually works.</p>
             </div>
             <Link to="/assessment" className="flex items-center gap-3 text-blue-600 font-black uppercase tracking-widest text-sm hover:translate-x-2 transition-transform">
@@ -158,9 +158,9 @@ const Landing: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[280px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 auto-rows-auto md:auto-rows-[280px]">
             {/* Bento Card: Skill Assessment (Large) */}
-            <div className="md:col-span-8 bg-white rounded-[3rem] p-10 border border-slate-200/60 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group overflow-hidden relative">
+            <div className="md:col-span-8 bg-white rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 border border-slate-200/60 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group overflow-hidden relative min-h-[200px]">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-700"></div>
               <div className="relative z-10">
                 <div className="w-16 h-16 bg-blue-600 text-white rounded-[1.5rem] flex items-center justify-center mb-8 shadow-xl shadow-blue-600/20">
@@ -177,7 +177,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* Bento Card: Mock Interview (Small) */}
-            <div className="md:col-span-4 bg-slate-900 rounded-[3rem] p-10 text-white shadow-xl hover:shadow-indigo-900/20 transition-all duration-500 flex flex-col justify-between group relative overflow-hidden">
+            <div className="md:col-span-4 bg-slate-900 rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 text-white shadow-xl hover:shadow-indigo-900/20 transition-all duration-500 flex flex-col justify-between group relative overflow-hidden min-h-[180px]">
                <div className="absolute -bottom-10 -right-10 opacity-10 group-hover:opacity-20 transition-opacity">
                  <MessageSquare size={200} />
                </div>
@@ -191,7 +191,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* Bento Card: Job Matching (Small) */}
-            <div className="md:col-span-4 bg-white rounded-[3rem] p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+            <div className="md:col-span-4 bg-white rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between min-h-[180px]">
                <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
                  <Briefcase size={28} />
                </div>
@@ -202,7 +202,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* Bento Card: Resume Analysis (Medium) */}
-            <div className="md:col-span-4 bg-indigo-600 rounded-[3rem] p-10 text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">
+            <div className="md:col-span-4 bg-indigo-600 rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 text-white shadow-xl flex flex-col justify-between group overflow-hidden relative min-h-[200px]">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
                 <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6">
@@ -223,7 +223,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* Bento Card: Learning Paths (Small) */}
-            <div className="md:col-span-4 bg-white rounded-[3rem] p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+            <div className="md:col-span-4 bg-white rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between min-h-[180px]">
               <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
                 <Zap size={28} />
               </div>
@@ -237,10 +237,10 @@ const Landing: React.FC = () => {
       </section>
 
       {/* How It Works Path */}
-      <section id="solutions" className="py-32 px-6">
+      <section id="solutions" className="py-16 sm:py-32 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-24">
-            <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tighter">Your path to <span className="text-blue-600 underline decoration-blue-200">Employment</span></h2>
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-24">
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tighter">Your path to <span className="text-blue-600 underline decoration-blue-200">Employment</span></h2>
             <p className="text-lg text-slate-500 font-medium">Three simple steps to transition from student to professional.</p>
           </div>
 
@@ -250,7 +250,7 @@ const Landing: React.FC = () => {
               <div className="h-20 w-full bg-blue-600 absolute top-0 animate-pulse"></div>
             </div>
 
-            <div className="space-y-32">
+            <div className="space-y-16 sm:space-y-32">
               <StepRow 
                 number="01" 
                 title="Identify Your Gaps" 
@@ -278,15 +278,15 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Modern CTA */}
-      <section className="py-24 px-6 relative overflow-hidden">
+      <section className="py-12 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-[#0f172a] rounded-[4rem] p-12 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(37,99,235,0.2)]">
+          <div className="bg-[#0f172a] rounded-2xl sm:rounded-[4rem] p-6 sm:p-12 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(37,99,235,0.2)]">
             <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[160px] opacity-20"></div>
             <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">Ready to start <br /> your story?</h2>
-                <p className="text-xl text-slate-400 font-medium leading-relaxed mb-10 max-w-md">Join 12,000+ students building their careers with SkillTrack AI today.</p>
-                <Link to="/signup" className="inline-flex items-center gap-4 bg-white text-slate-900 px-12 py-5 rounded-[2rem] font-black text-xl hover:bg-blue-50 transition-all hover:scale-105 shadow-2xl active:scale-95">
+                <h2 className="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 sm:mb-8 tracking-tighter leading-none">Ready to start <br /> your story?</h2>
+                <p className="text-base sm:text-xl text-slate-400 font-medium leading-relaxed mb-6 sm:mb-10 max-w-md">Join 12,000+ students building their careers with SkillTrack AI today.</p>
+                <Link to="/signup" className="inline-flex items-center gap-3 sm:gap-4 bg-white text-slate-900 px-8 sm:px-12 py-4 sm:py-5 rounded-xl sm:rounded-[2rem] font-black text-base sm:text-xl hover:bg-blue-50 transition-all hover:scale-105 shadow-2xl active:scale-95">
                   Get Free Access <ArrowRight />
                 </Link>
               </div>
@@ -318,9 +318,9 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Minimal Footer */}
-      <footer className="bg-white py-24 px-6 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-16">
-          <div className="col-span-1 md:col-span-2">
+      <footer className="bg-white py-12 sm:py-24 px-4 sm:px-6 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-16">
+          <div className="col-span-2 md:col-span-2">
             <div className="flex items-center gap-2 mb-8">
               <div className="bg-blue-600 text-white font-black p-1.5 rounded-xl">ST</div>
               <span className="text-2xl font-black text-slate-900 tracking-tight">SkillTrack</span>
@@ -364,18 +364,18 @@ const Landing: React.FC = () => {
 };
 
 const StepRow = ({ number, title, desc, align, icon }: { number: string, title: string, desc: string, align: 'left' | 'right', icon: React.ReactNode }) => (
-  <div className={`flex flex-col md:flex-row items-center gap-12 md:gap-24 ${align === 'right' ? 'md:flex-row-reverse' : ''}`}>
-    <div className="flex-1 space-y-6 md:text-left text-center">
-      <div className="text-6xl font-black text-blue-600/10 tracking-tighter mb-4">{number}</div>
-      <h3 className="text-4xl font-black text-slate-900 tracking-tight">{title}</h3>
-      <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-md mx-auto md:mx-0">{desc}</p>
+  <div className={`flex flex-col md:flex-row items-center gap-8 md:gap-24 ${align === 'right' ? 'md:flex-row-reverse' : ''}`}>
+    <div className="flex-1 space-y-4 sm:space-y-6 md:text-left text-center">
+      <div className="text-4xl sm:text-6xl font-black text-blue-600/10 tracking-tighter mb-2 sm:mb-4">{number}</div>
+      <h3 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">{title}</h3>
+      <p className="text-base sm:text-lg text-slate-500 font-medium leading-relaxed max-w-md mx-auto md:mx-0">{desc}</p>
     </div>
     
     <div className="relative flex-1 flex justify-center items-center">
-      <div className="w-64 h-64 bg-white rounded-[3rem] shadow-2xl border border-slate-100 flex items-center justify-center text-blue-600 relative z-10 animate-float">
+      <div className="w-40 h-40 sm:w-64 sm:h-64 bg-white rounded-2xl sm:rounded-[3rem] shadow-2xl border border-slate-100 flex items-center justify-center text-blue-600 relative z-10 animate-float">
         {icon}
       </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-50/50 rounded-full blur-3xl -z-0"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 sm:w-80 h-52 sm:h-80 bg-blue-50/50 rounded-full blur-3xl -z-0"></div>
     </div>
   </div>
 );

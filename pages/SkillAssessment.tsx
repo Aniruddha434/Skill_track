@@ -85,15 +85,16 @@ const SkillAssessment: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto py-4 sm:py-8">
       {/* SETUP SCREEN */}
       {currentStep === 0 && (
-        <div className="bg-white rounded-[2.5rem] p-12 border border-slate-100 shadow-2xl text-center glass-depth animate-in zoom-in-95 duration-500">
-          <div className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-600 mx-auto mb-8 shadow-inner animate-float">
-            <Trophy size={48} />
+        <div className="bg-white rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-12 border border-slate-100 shadow-2xl text-center glass-depth animate-in zoom-in-95 duration-500">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-blue-50 rounded-2xl sm:rounded-3xl flex items-center justify-center text-blue-600 mx-auto mb-5 sm:mb-8 shadow-inner animate-float">
+            <Trophy size={32} className="sm:hidden" />
+            <Trophy size={48} className="hidden sm:block" />
           </div>
-          <h1 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">AI Skill Assessment</h1>
-          <p className="text-slate-500 mb-10 max-w-lg mx-auto leading-relaxed text-lg">
+          <h1 className="text-2xl sm:text-4xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">AI Skill Assessment</h1>
+          <p className="text-slate-500 mb-6 sm:mb-10 max-w-lg mx-auto leading-relaxed text-base sm:text-lg">
             Select a topic and difficulty. Our AI will generate unique questions tailored to your chosen settings.
           </p>
 
@@ -103,7 +104,7 @@ const SkillAssessment: React.FC = () => {
             </div>
           )}
 
-          <div className="max-w-md mx-auto space-y-6 text-left mb-12">
+          <div className="max-w-md mx-auto space-y-4 sm:space-y-6 text-left mb-8 sm:mb-12">
             <div>
               <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Topic</label>
               <select
@@ -166,24 +167,24 @@ const SkillAssessment: React.FC = () => {
 
       {/* QUIZ SCREEN */}
       {currentStep === 2 && questions.length > 0 && (
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden glass-depth animate-in slide-in-from-right-8 duration-500">
-          <div className="bg-slate-900 p-8 text-white flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
-                <Target size={24} />
+        <div className="bg-white rounded-2xl sm:rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden glass-depth animate-in slide-in-from-right-8 duration-500">
+          <div className="bg-slate-900 p-4 sm:p-8 text-white flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                <Target size={20} />
               </div>
-              <div>
-                <h2 className="text-xl font-bold tracking-tight">{topic}</h2>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{difficulty} difficulty</p>
+              <div className="min-w-0">
+                <h2 className="text-base sm:text-xl font-bold tracking-tight truncate">{topic}</h2>
+                <p className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest">{difficulty} difficulty</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 px-4 py-2 bg-slate-800 rounded-xl text-sm font-bold border border-slate-700">
-              <Clock size={18} className="text-blue-400" />
+            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-800 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold border border-slate-700 flex-shrink-0">
+              <Clock size={16} className="text-blue-400 hidden sm:block" />
               <span>Q {currentQuestionIndex + 1}/{questions.length}</span>
             </div>
           </div>
 
-          <div className="px-10 pt-10">
+          <div className="px-4 sm:px-10 pt-6 sm:pt-10">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Progress</span>
               <span className="text-sm font-bold text-blue-600">{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</span>
@@ -195,11 +196,11 @@ const SkillAssessment: React.FC = () => {
               ></div>
             </div>
 
-            <h3 className="text-2xl font-bold text-slate-900 mb-10 leading-snug tracking-tight">
+            <h3 className="text-lg sm:text-2xl font-bold text-slate-900 mb-6 sm:mb-10 leading-snug tracking-tight">
               {questions[currentQuestionIndex].question}
             </h3>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
               {questions[currentQuestionIndex].options.map((option, idx) => {
                 const isSelected = answers[currentQuestionIndex] === idx;
                 const isCorrect = idx === questions[currentQuestionIndex].correctAnswer;
@@ -218,9 +219,9 @@ const SkillAssessment: React.FC = () => {
                     key={idx}
                     onClick={() => handleOptionSelect(idx)}
                     disabled={showExplanation}
-                    className={`w-full p-6 rounded-2xl border-2 text-left transition-all flex items-center justify-between group ${borderClass}`}
+                    className={`w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl border-2 text-left transition-all flex items-center justify-between group gap-3 ${borderClass}`}
                   >
-                    <span className="text-lg font-bold">{option}</span>
+                    <span className="text-sm sm:text-lg font-bold">{option}</span>
                     <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
                       showExplanation && isCorrect
                         ? 'border-green-500 bg-green-500 text-white'
@@ -245,28 +246,28 @@ const SkillAssessment: React.FC = () => {
             )}
           </div>
 
-          <div className="p-10 bg-slate-50/50 flex items-center justify-between border-t border-slate-100">
+          <div className="p-4 sm:p-10 bg-slate-50/50 flex items-center justify-between border-t border-slate-100 gap-3">
             <button
               onClick={() => { setShowExplanation(false); setCurrentQuestionIndex((prev) => Math.max(0, prev - 1)); }}
               disabled={currentQuestionIndex === 0 || showExplanation}
-              className="flex items-center gap-2 text-slate-500 font-bold disabled:opacity-30 hover:text-slate-900 transition-colors"
+              className="flex items-center gap-1 sm:gap-2 text-slate-500 font-bold disabled:opacity-30 hover:text-slate-900 transition-colors text-sm sm:text-base"
             >
-              <ChevronLeft size={20} /> Back
+              <ChevronLeft size={18} /> Back
             </button>
             {!showExplanation ? (
               <button
                 onClick={submitAnswer}
                 disabled={answers[currentQuestionIndex] === -1}
-                className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg disabled:opacity-50"
+                className="flex items-center gap-2 bg-slate-900 text-white px-5 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg disabled:opacity-50 text-sm sm:text-base"
               >
-                Submit Answer
+                Submit
               </button>
             ) : (
               <button
                 onClick={nextQuestion}
-                className="flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95"
+                className="flex items-center gap-2 bg-blue-600 text-white px-5 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95"
               >
-                {currentQuestionIndex === questions.length - 1 ? 'See Results' : 'Next Question'} <ChevronRight size={20} />
+                {currentQuestionIndex === questions.length - 1 ? 'Results' : 'Next'} <ChevronRight size={18} />
               </button>
             )}
           </div>
@@ -275,28 +276,30 @@ const SkillAssessment: React.FC = () => {
 
       {/* RESULT SCREEN */}
       {currentStep === 3 && (
-        <div className="bg-white rounded-[2.5rem] p-16 border border-slate-100 shadow-2xl text-center glass-depth animate-in zoom-in-95 duration-700">
-          <div className="w-32 h-32 bg-green-50 rounded-[2rem] flex items-center justify-center text-green-600 mx-auto mb-10 relative animate-float shadow-inner">
-            <CheckCircle2 size={64} />
-            <div className="absolute -top-4 -right-4 bg-yellow-400 text-white p-3 rounded-2xl shadow-xl border-4 border-white">
-              <Trophy size={28} />
+        <div className="bg-white rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-16 border border-slate-100 shadow-2xl text-center glass-depth animate-in zoom-in-95 duration-700">
+          <div className="w-20 h-20 sm:w-32 sm:h-32 bg-green-50 rounded-2xl sm:rounded-[2rem] flex items-center justify-center text-green-600 mx-auto mb-6 sm:mb-10 relative animate-float shadow-inner">
+            <CheckCircle2 size={40} className="sm:hidden" />
+            <CheckCircle2 size={64} className="hidden sm:block" />
+            <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-yellow-400 text-white p-2 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl border-4 border-white">
+              <Trophy size={18} className="sm:hidden" />
+              <Trophy size={28} className="hidden sm:block" />
             </div>
           </div>
-          <h1 className="text-5xl font-black text-slate-900 mb-3 tracking-tight">Assessment Complete!</h1>
-          <p className="text-slate-500 mb-12 text-lg font-medium">Your {topic} assessment has been analyzed and saved to your profile.</p>
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 mb-2 sm:mb-3 tracking-tight">Assessment Complete!</h1>
+          <p className="text-slate-500 mb-8 sm:mb-12 text-sm sm:text-lg font-medium">Your {topic} assessment has been analyzed and saved to your profile.</p>
 
-          <div className="max-w-lg mx-auto grid grid-cols-3 gap-6 mb-16">
-            <div className="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100/50 shadow-sm">
-              <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Score</p>
-              <p className="text-4xl font-black text-blue-600">{Math.round((score / questions.length) * 100)}%</p>
+          <div className="max-w-lg mx-auto grid grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-16">
+            <div className="bg-blue-50/50 p-3 sm:p-6 rounded-xl sm:rounded-[2rem] border border-blue-100/50 shadow-sm">
+              <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Score</p>
+              <p className="text-2xl sm:text-4xl font-black text-blue-600">{Math.round((score / questions.length) * 100)}%</p>
             </div>
-            <div className="bg-green-50/50 p-6 rounded-[2rem] border border-green-100/50 shadow-sm">
-              <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Correct</p>
-              <p className="text-4xl font-black text-green-600">{score}/{questions.length}</p>
+            <div className="bg-green-50/50 p-3 sm:p-6 rounded-xl sm:rounded-[2rem] border border-green-100/50 shadow-sm">
+              <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Correct</p>
+              <p className="text-2xl sm:text-4xl font-black text-green-600">{score}/{questions.length}</p>
             </div>
-            <div className="bg-purple-50/50 p-6 rounded-[2rem] border border-purple-100/50 shadow-sm">
-              <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Time</p>
-              <p className="text-4xl font-black text-purple-600">{Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}</p>
+            <div className="bg-purple-50/50 p-3 sm:p-6 rounded-xl sm:rounded-[2rem] border border-purple-100/50 shadow-sm">
+              <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Time</p>
+              <p className="text-2xl sm:text-4xl font-black text-purple-600">{Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}</p>
             </div>
           </div>
 

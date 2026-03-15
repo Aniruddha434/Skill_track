@@ -63,10 +63,10 @@ const CareerRecommendation: React.FC = () => {
 
   return (
     <FeatureGate featureName="Career Match" requirements={gateRequirements}>
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="max-w-3xl">
-          <h1 className="text-3xl font-bold text-slate-900">Career Recommendations</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Career Recommendations</h1>
           <p className="text-slate-500 mt-2">
             {profile?.skills.length
               ? `Personalized for your ${profile.skills.length} skills and ${profile.target_role || 'career goals'}.`
@@ -95,9 +95,9 @@ const CareerRecommendation: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {careers.map((career) => (
-              <div key={career.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
+              <div key={career.id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
                 <div className="h-32 bg-slate-100 p-6 flex justify-between items-start relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full -mr-16 -mt-16"></div>
                   <div className="bg-white p-3 rounded-2xl shadow-sm text-blue-600 relative z-10">
@@ -108,8 +108,8 @@ const CareerRecommendation: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-8 flex-1 flex flex-col">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{career.title}</h3>
+                <div className="p-4 sm:p-8 flex-1 flex flex-col">
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{career.title}</h3>
                   <p className="text-slate-500 text-sm leading-relaxed mb-6">{career.description}</p>
 
                   <div className="space-y-4 mb-8">
@@ -181,7 +181,7 @@ const CareerRecommendation: React.FC = () => {
           </div>
 
           {/* AI Context Card */}
-          <div className="bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-500/20">
+          <div className="bg-blue-600 rounded-2xl sm:rounded-3xl p-5 sm:p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-500/20">
             <div className="absolute top-0 right-0 p-12 opacity-10">
               <ShieldCheck size={160} />
             </div>

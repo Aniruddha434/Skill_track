@@ -180,15 +180,15 @@ const ResumeUpload: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-8 perspective-1000">
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Resume AI Insights</h1>
-        <p className="text-slate-500 text-lg mt-1 font-medium">Upload your resume (PDF) to get an AI-powered analysis and auto-fill your profile.</p>
+    <div className="max-w-6xl mx-auto py-4 sm:py-8 perspective-1000">
+      <div className="mb-6 sm:mb-12">
+        <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight">Resume AI Insights</h1>
+        <p className="text-slate-500 text-sm sm:text-lg mt-1 font-medium">Upload your resume (PDF) to get an AI-powered analysis and auto-fill your profile.</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-12">
+      <div className="grid lg:grid-cols-2 gap-6 sm:gap-12">
         <div className="space-y-8 animate-in slide-in-from-left-8 duration-700">
-          <div className="bg-white p-12 rounded-[2.5rem] border-2 border-dashed border-slate-200 hover:border-blue-500 transition-all group cursor-pointer relative overflow-hidden glass-depth shadow-sm hover:shadow-2xl hover:shadow-blue-500/5 preserve-3d">
+          <div className="bg-white p-6 sm:p-12 rounded-2xl sm:rounded-[2.5rem] border-2 border-dashed border-slate-200 hover:border-blue-500 transition-all group cursor-pointer relative overflow-hidden glass-depth shadow-sm hover:shadow-2xl hover:shadow-blue-500/5 preserve-3d">
             <input
               type="file"
               className="absolute inset-0 opacity-0 cursor-pointer z-10"
@@ -230,7 +230,7 @@ const ResumeUpload: React.FC = () => {
           <button
             disabled={!file || isAnalyzing}
             onClick={startAnalysis}
-            className={`w-full py-5 rounded-[1.5rem] font-bold text-xl flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 ${
+            className={`w-full py-4 sm:py-5 rounded-xl sm:rounded-[1.5rem] font-bold text-base sm:text-xl flex items-center justify-center gap-2 sm:gap-3 transition-all transform hover:-translate-y-1 ${
               !file ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-2xl shadow-blue-600/30'
             } active:scale-95`}
           >
@@ -265,7 +265,7 @@ const ResumeUpload: React.FC = () => {
               </div>
             </div>
           ) : analysisResult && (
-            <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 space-y-8 shadow-2xl glass-depth animate-in zoom-in-95 duration-500 overflow-auto max-h-[80vh]">
+            <div className="bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 space-y-6 sm:space-y-8 shadow-2xl glass-depth animate-in zoom-in-95 duration-500 overflow-auto max-h-[80vh]">
               {/* Score */}
               <div className="flex items-center justify-between">
                 <div>
@@ -279,8 +279,8 @@ const ResumeUpload: React.FC = () => {
               </div>
 
               {/* Auto-fill profile button */}
-              <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-white">
-                <div className="flex items-center justify-between">
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl sm:rounded-2xl text-white">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <UserCheck size={24} />
                     <div>
@@ -311,7 +311,7 @@ const ResumeUpload: React.FC = () => {
 
                 {/* Preview what will be filled */}
                 {!profileUpdated && (
-                  <div className="mt-3 pt-3 border-t border-white/20 grid grid-cols-2 gap-2 text-xs text-blue-100">
+                  <div className="mt-3 pt-3 border-t border-white/20 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-xs text-blue-100">
                     {analysisResult.fullName && <span>Name: {analysisResult.fullName}</span>}
                     {analysisResult.location && <span>Location: {analysisResult.location}</span>}
                     {analysisResult.linkedinUrl && <span>LinkedIn: Found</span>}

@@ -103,10 +103,10 @@ const JobRecommendation: React.FC = () => {
 
   return (
     <FeatureGate featureName="Job Board" requirements={gateRequirements}>
-    <div className="space-y-6 max-w-full overflow-hidden">
+    <div className="space-y-4 sm:space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="text-3xl font-bold text-slate-900">Job Opportunities</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Job Opportunities</h1>
           <p className="text-slate-500 flex items-center gap-1 text-sm">
             <Globe size={14} className="flex-shrink-0" />
             <span className="truncate">Real jobs from LinkedIn, Naukri, Unstop & Glassdoor{profile?.skills.length ? ` -- matched against your ${profile.skills.length} skills.` : '.'}</span>
@@ -220,14 +220,14 @@ const JobRecommendation: React.FC = () => {
               </div>
             ) : (
               filteredJobs.map((job) => (
-                <div key={job.id} className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-blue-500/50 hover:shadow-lg transition-all flex flex-col lg:flex-row lg:items-center gap-6 group overflow-hidden">
-                  <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center font-bold text-slate-500 text-2xl group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors flex-shrink-0">
+                <div key={job.id} className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 hover:border-blue-500/50 hover:shadow-lg transition-all flex flex-col lg:flex-row lg:items-center gap-4 sm:gap-6 group overflow-hidden">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-100 rounded-xl sm:rounded-2xl flex items-center justify-center font-bold text-slate-500 text-xl sm:text-2xl group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors flex-shrink-0 hidden sm:flex">
                     {job.company.charAt(0).toUpperCase()}
                   </div>
 
                   <div className="flex-1 min-w-0 overflow-hidden">
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
-                      <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors break-words">{job.title}</h3>
+                      <h3 className="text-base sm:text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors break-words">{job.title}</h3>
                       {job.matchPercentage > 0 && profile?.skills.length ? (
                         <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
                           job.matchPercentage >= 70 ? 'bg-green-50 text-green-700' :
@@ -277,7 +277,7 @@ const JobRecommendation: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-end lg:flex-col lg:items-end lg:justify-center gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 flex-shrink-0">
+                  <div className="flex items-center lg:flex-col lg:items-end lg:justify-center gap-4 border-t lg:border-t-0 pt-3 sm:pt-4 lg:pt-0 flex-shrink-0">
                     <a
                       href={job.applyUrl}
                       target="_blank"

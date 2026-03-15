@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-3xl font-bold text-slate-900">Welcome back, {displayName.split(' ')[0]}!</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Welcome back, {displayName.split(' ')[0]}!</h1>
             <div className="bg-blue-50 text-blue-600 p-1.5 rounded-full">
               <Sparkles size={16} />
             </div>
@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <StatCard
           icon={<Activity className="text-blue-600" />}
           label="Skill Score"
@@ -117,9 +117,9 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Main Charts and Info */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
         {/* Progress Chart */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] glass-depth">
+        <div className="lg:col-span-2 bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] glass-depth">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-lg font-bold text-slate-900 tracking-tight">Assessment Score History</h3>
           </div>
@@ -160,7 +160,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions Card */}
-        <div className="bg-[#0f172a] p-8 rounded-[2.5rem] text-white relative overflow-hidden flex flex-col justify-between group hover-tilt preserve-3d shadow-2xl shadow-blue-900/10 transition-all duration-500">
+        <div className="bg-[#0f172a] p-5 sm:p-8 rounded-2xl sm:rounded-[2.5rem] text-white relative overflow-hidden flex flex-col justify-between group hover-tilt preserve-3d shadow-2xl shadow-blue-900/10 transition-all duration-500">
           <div className="absolute -top-10 -right-10 w-48 h-48 bg-blue-600 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
           <div className="absolute bottom-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
             <Target size={180} />
@@ -205,9 +205,9 @@ const Dashboard: React.FC = () => {
 
       {/* Recent Assessments */}
       {dashData?.recentAssessments && dashData.recentAssessments.length > 0 && (
-        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden glass-depth">
-          <div className="p-8 border-b border-slate-50 flex items-center justify-between">
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Assessments</h3>
+        <div className="bg-white rounded-2xl sm:rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden glass-depth">
+          <div className="p-4 sm:p-8 border-b border-slate-50 flex items-center justify-between gap-4">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Recent Assessments</h3>
             <button
               onClick={() => navigate('/assessment')}
               className="text-blue-600 font-bold text-sm hover:underline flex items-center gap-1 transition-all"
@@ -217,14 +217,14 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="divide-y divide-slate-50">
             {dashData.recentAssessments.slice(0, 3).map((assessment, idx) => (
-              <div key={idx} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all">
-                <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
-                    <Target size={20} />
+              <div key={idx} className="p-3 sm:p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all gap-3">
+                <div className="flex items-center gap-3 sm:gap-5 min-w-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-xl sm:rounded-2xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                    <Target size={18} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">{assessment.topic}</h4>
-                    <p className="text-sm text-slate-500">
+                  <div className="min-w-0">
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-base truncate">{assessment.topic}</h4>
+                    <p className="text-xs sm:text-sm text-slate-500">
                       {new Date(assessment.created_at || '').toLocaleDateString()}
                     </p>
                   </div>
@@ -255,14 +255,14 @@ const StatCard = ({ icon, label, value, change, isPositive, color }: { icon: Rea
   };
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 hover:-translate-y-1 group hover-tilt preserve-3d">
-      <div className="flex items-center gap-4 mb-5">
-        <div className={`p-3 rounded-2xl transition-all duration-300 ${colorMap[color]} group-hover:scale-110 shadow-sm`}>{icon}</div>
-        <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{label}</span>
+    <div className="bg-white p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300 hover:-translate-y-1 group hover-tilt preserve-3d">
+      <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-5">
+        <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 ${colorMap[color]} group-hover:scale-110 shadow-sm`}>{icon}</div>
+        <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-wider sm:tracking-widest">{label}</span>
       </div>
       <div className="flex flex-col">
-        <span className="text-3xl font-black text-slate-900 tracking-tight">{value}</span>
-        <div className="text-xs mt-2 font-bold text-slate-500">
+        <span className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">{value}</span>
+        <div className="text-[10px] sm:text-xs mt-1 sm:mt-2 font-bold text-slate-500 line-clamp-2">
           {change}
         </div>
       </div>
@@ -307,11 +307,11 @@ const FeatureUnlockCard = ({
   if (allDone) return null; // Hide when all unlocked
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-      <div className="p-6 border-b border-slate-100">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">Unlock All Features</h3>
+    <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+      <div className="p-4 sm:p-6 border-b border-slate-100">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">Unlock All Features</h3>
             <p className="text-sm text-slate-500 mt-1">Complete these steps to access all AI-powered tools</p>
           </div>
           <div className="text-right">
@@ -328,9 +328,9 @@ const FeatureUnlockCard = ({
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
         {/* Steps */}
-        <div className="p-6 space-y-3">
+        <div className="p-4 sm:p-6 space-y-3">
           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Steps to Complete</h4>
           {steps.map((step, i) => (
             <div key={i} className="flex items-center gap-3">
@@ -355,7 +355,7 @@ const FeatureUnlockCard = ({
         </div>
 
         {/* Features */}
-        <div className="p-6 space-y-3">
+        <div className="p-4 sm:p-6 space-y-3">
           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Features</h4>
           {features.map((feature, i) => (
             <div key={i} className="flex items-center gap-3">

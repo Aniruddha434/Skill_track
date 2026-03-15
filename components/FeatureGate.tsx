@@ -28,10 +28,10 @@ const FeatureGate: React.FC<FeatureGateProps> = ({ children, featureName, requir
   const progressPct = Math.round((completedCount / requirements.length) * 100);
 
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh] px-2">
       <div className="max-w-lg w-full text-center">
         {/* Lock icon */}
-        <div className="relative mx-auto w-24 h-24 mb-8">
+        <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-6 sm:mb-8">
           <div className="absolute inset-0 bg-slate-100 rounded-full animate-pulse opacity-50"></div>
           <div className="relative w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center border-2 border-slate-200">
             <Lock size={36} className="text-slate-400" />

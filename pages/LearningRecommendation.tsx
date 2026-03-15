@@ -86,10 +86,10 @@ const LearningRecommendation: React.FC = () => {
 
   return (
     <FeatureGate featureName="Learning Hub" requirements={gateRequirements}>
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="max-w-3xl">
-          <h1 className="text-3xl font-bold text-slate-900">Learning Hub</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Learning Hub</h1>
           <p className="text-slate-500 mt-2">
             AI-curated courses and resources to bridge your skill gaps and accelerate your career.
           </p>
@@ -116,9 +116,9 @@ const LearningRecommendation: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {courses.map((course) => (
-              <div key={course.id} className="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
+              <div key={course.id} className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
                 <div className="p-6 bg-slate-50 border-b border-slate-100">
                   <div className="flex items-center justify-between mb-4">
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getPlatformColor(course.platform)}`}>
@@ -173,7 +173,7 @@ const LearningRecommendation: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">YouTube Videos</h3>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                 {youtubeVideos.map((video, i) => (
                   <a
                     key={i}
@@ -201,7 +201,7 @@ const LearningRecommendation: React.FC = () => {
           {freeResources.length > 0 && (
             <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200">
               <h3 className="text-xl font-bold text-slate-900 mb-6">Free Community Resources</h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {freeResources.map((resource, i) => (
                   <a
                     key={i}

@@ -35,15 +35,15 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side: Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-8 bg-white">
         <div className="max-w-md w-full">
-          <div className="flex items-center gap-2 mb-10">
+          <div className="flex items-center gap-2 mb-8 sm:mb-10">
             <div className="bg-blue-600 text-white font-bold p-1.5 rounded-lg">ST</div>
             <span className="text-2xl font-bold text-slate-900 tracking-tight">SkillTrack</span>
           </div>
 
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-          <p className="text-slate-500 mb-10 font-medium">Please enter your details to sign in to your account.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">Welcome Back</h1>
+          <p className="text-slate-500 mb-8 sm:mb-10 font-medium">Please enter your details to sign in to your account.</p>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3">

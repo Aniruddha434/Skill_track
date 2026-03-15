@@ -62,15 +62,15 @@ const SkillGapAnalysis: React.FC = () => {
 
   return (
     <FeatureGate featureName="Skill Gap Analysis" requirements={gateRequirements}>
-    <div className="space-y-8 max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between gap-6">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Skill Gap Analysis</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Skill Gap Analysis</h1>
           <p className="text-slate-500">
             Target Role: <span className="font-bold text-blue-600">{targetRole || profile?.target_role || 'Set a target role in your profile'}</span>
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={fetchGaps}
             disabled={loading}
@@ -79,7 +79,7 @@ const SkillGapAnalysis: React.FC = () => {
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Re-analyze
           </button>
           {readinessScore > 0 && (
-            <div className="bg-white px-6 py-4 rounded-2xl border border-slate-200 flex items-center gap-4 shadow-sm">
+            <div className="bg-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200 flex items-center gap-3 sm:gap-4 shadow-sm">
               <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
                 <TrendingUp size={24} />
               </div>
@@ -111,17 +111,17 @@ const SkillGapAnalysis: React.FC = () => {
         </div>
       ) : gaps.length > 0 ? (
         <>
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-8 border-b border-slate-100 bg-slate-50/50">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-8 border-b border-slate-100 bg-slate-50/50">
               <h3 className="text-lg font-bold text-slate-900">Current vs Required Proficiency</h3>
               <p className="text-sm text-slate-500 mt-1">Based on industry standards for {targetRole}.</p>
             </div>
-            <div className="p-8 space-y-10">
+            <div className="p-4 sm:p-8 space-y-8 sm:space-y-10">
               {gaps.map((gap) => (
                 <div key={gap.skill} className="space-y-3">
-                  <div className="flex justify-between items-end">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-lg font-bold text-slate-900">{gap.skill}</h4>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="text-base sm:text-lg font-bold text-slate-900">{gap.skill}</h4>
                       {gap.requiredLevel - gap.currentLevel > 30 && (
                         <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded text-[10px] font-bold uppercase">Critical Gap</span>
                       )}
@@ -166,7 +166,7 @@ const SkillGapAnalysis: React.FC = () => {
           </div>
 
           {/* Action Cards */}
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             {criticalGaps.length > 0 && (
               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
                 <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6">

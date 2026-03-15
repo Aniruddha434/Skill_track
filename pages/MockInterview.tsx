@@ -89,24 +89,25 @@ const MockInterview: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-4 h-[calc(100vh-140px)] flex flex-col">
+    <div className="max-w-5xl mx-auto py-2 sm:py-4 h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)] flex flex-col">
       {/* SETUP */}
       {step === 'setup' && (
         <div className="flex-1 flex items-center justify-center animate-in zoom-in-95 duration-500">
-          <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl max-w-xl w-full text-center glass-depth">
-            <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-float">
-              <Video size={48} />
+          <div className="bg-white p-6 sm:p-12 rounded-2xl sm:rounded-[3rem] border border-slate-100 shadow-2xl max-w-xl w-full text-center glass-depth mx-4 sm:mx-0">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-blue-50 text-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 animate-float">
+              <Video size={36} className="sm:hidden" />
+              <Video size={48} className="hidden sm:block" />
             </div>
-            <h1 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">AI Mock Interview</h1>
-            <p className="text-slate-500 mb-10 text-lg font-medium">Practice with a real AI interviewer. Get instant feedback on your responses.</p>
+            <h1 className="text-2xl sm:text-4xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">AI Mock Interview</h1>
+            <p className="text-slate-500 mb-6 sm:mb-10 text-base sm:text-lg font-medium">Practice with a real AI interviewer. Get instant feedback on your responses.</p>
 
-            <div className="space-y-6 mb-10 text-left">
+            <div className="space-y-6 mb-8 sm:mb-10 text-left">
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Select Your Target Role</label>
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-slate-700"
+                  className="w-full p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-slate-700"
                 >
                   {INTERVIEW_ROLES.map((r) => (
                     <option key={r} value={r}>{r}</option>
@@ -117,7 +118,7 @@ const MockInterview: React.FC = () => {
 
             <button
               onClick={initInterview}
-              className="w-full py-5 bg-blue-600 text-white rounded-2xl font-bold text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3"
+              className="w-full py-4 sm:py-5 bg-blue-600 text-white rounded-xl sm:rounded-2xl font-bold text-lg sm:text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3"
             >
               Start Session <ChevronRight />
             </button>
@@ -127,32 +128,33 @@ const MockInterview: React.FC = () => {
 
       {/* ACTIVE INTERVIEW */}
       {step === 'active' && (
-        <div className="flex-1 flex flex-col bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden glass-depth animate-in slide-in-from-bottom-8 duration-500">
-          <div className="bg-slate-900 p-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white relative">
-                <Bot size={24} />
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-slate-900 rounded-full animate-pulse"></div>
+        <div className="flex-1 flex flex-col bg-white rounded-2xl sm:rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden glass-depth animate-in slide-in-from-bottom-8 duration-500">
+          <div className="bg-slate-900 p-3 sm:p-6 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white relative flex-shrink-0">
+                <Bot size={20} className="sm:hidden" />
+                <Bot size={24} className="hidden sm:block" />
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 border-2 border-slate-900 rounded-full animate-pulse"></div>
               </div>
-              <div>
-                <h3 className="text-white font-bold tracking-tight">AI Interviewer</h3>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{role} Interview</p>
+              <div className="min-w-0">
+                <h3 className="text-white font-bold tracking-tight text-sm sm:text-base truncate">AI Interviewer</h3>
+                <p className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest truncate">{role}</p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <span className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-bold border border-slate-700">
+            <div className="flex gap-2 flex-shrink-0">
+              <span className="hidden sm:inline-flex px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-bold border border-slate-700">
                 {messages.filter(m => m.role === 'user').length} responses
               </span>
               <button
-                className="px-6 py-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-sm font-bold hover:bg-red-500 hover:text-white transition-all"
+                className="px-3 sm:px-6 py-2 sm:py-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-xs sm:text-sm font-bold hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"
                 onClick={endInterview}
               >
-                End Interview
+                End
               </button>
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/30">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 sm:p-8 space-y-4 sm:space-y-6 bg-slate-50/30">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                 <div className={`max-w-[80%] flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -180,22 +182,22 @@ const MockInterview: React.FC = () => {
             )}
           </div>
 
-          <div className="p-6 bg-white border-t border-slate-100">
-            <div className="flex gap-4 relative">
+          <div className="p-3 sm:p-6 bg-white border-t border-slate-100">
+            <div className="flex gap-2 sm:gap-4 relative">
               <input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Type your response here..."
+                placeholder="Type your response..."
                 disabled={isTyping}
-                className="flex-1 p-5 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium text-slate-800 transition-all disabled:opacity-50"
+                className="flex-1 p-3 sm:p-5 pr-12 sm:pr-16 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium text-slate-800 transition-all disabled:opacity-50 text-sm sm:text-base"
               />
               <button
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isTyping}
-                className="absolute right-2 top-2 bottom-2 aspect-square bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-50"
+                className="absolute right-1.5 sm:right-2 top-1.5 sm:top-2 bottom-1.5 sm:bottom-2 aspect-square bg-blue-600 text-white rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-50"
               >
-                <Send size={20} />
+                <Send size={18} />
               </button>
             </div>
           </div>
@@ -216,16 +218,17 @@ const MockInterview: React.FC = () => {
       {/* FEEDBACK */}
       {step === 'feedback' && feedback && (
         <div className="flex-1 flex items-center justify-center animate-in zoom-in-95 duration-700">
-          <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl max-w-2xl w-full glass-depth">
-            <div className="text-center mb-10">
-              <div className="w-24 h-24 bg-green-50 text-green-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner animate-float">
-                <Trophy size={48} />
+          <div className="bg-white p-5 sm:p-12 rounded-2xl sm:rounded-[3rem] border border-slate-100 shadow-2xl max-w-2xl w-full glass-depth mx-2 sm:mx-0 overflow-y-auto max-h-[calc(100vh-160px)]">
+            <div className="text-center mb-6 sm:mb-10">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-green-50 text-green-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-8 shadow-inner animate-float">
+                <Trophy size={32} className="sm:hidden" />
+                <Trophy size={48} className="hidden sm:block" />
               </div>
-              <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Interview Complete!</h1>
-              <p className="text-slate-500 text-lg font-medium">Here's your AI-generated performance report.</p>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 mb-2 sm:mb-3 tracking-tight">Interview Complete!</h1>
+              <p className="text-slate-500 text-sm sm:text-lg font-medium">Here's your AI-generated performance report.</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-10">
               <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50 text-center">
                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Technical</p>
                 <p className={`text-2xl font-black ${getScoreColor(feedback.technicalAccuracy)}`}>{feedback.technicalAccuracy}%</p>
@@ -244,7 +247,7 @@ const MockInterview: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-left bg-slate-50 p-8 rounded-3xl border border-slate-100 mb-8">
+            <div className="text-left bg-slate-50 p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 mb-6 sm:mb-8">
               <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <Sparkles size={18} className="text-yellow-500" /> AI Feedback Summary
               </h4>

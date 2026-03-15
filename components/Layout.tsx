@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { NAVIGATION_ITEMS } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -23,22 +23,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const fullReady = profileReady && assessmentCount >= 2 && hasResumeAnalysis;
 
     const locked = new Set<string>();
-    // Career Match, Skill Gaps, Learning Hub require profile ready
     if (!profileReady) {
       locked.add('/careers');
       locked.add('/gaps');
       locked.add('/learning');
     }
-    // Job Board requires full readiness
     if (!fullReady) {
       locked.add('/jobs');
     }
     return locked;
   }, [profile, assessmentCount, hasResumeAnalysis]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Desktop: collapsed by default on mobile
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isAuthPage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup';
 
@@ -93,24 +109,42 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-[#f8fafc] overflow-hidden">
-      {/* Sidebar */}
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        ></div>
+      )}
+
+      {/* Sidebar - Desktop: static, Mobile: drawer overlay */}
       <aside
-        className={`${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        } bg-[#0f172a] text-white flex flex-col transition-all duration-300 ease-in-out z-30`}
+        className={`
+          fixed md:static inset-y-0 left-0 z-50
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${isSidebarOpen ? 'w-64' : 'w-64 md:w-20'}
+          bg-[#0f172a] text-white flex flex-col transition-all duration-300 ease-in-out
+        `}
       >
         <div className="p-6 flex items-center justify-between">
-          {isSidebarOpen ? (
+          {(isSidebarOpen || isMobileMenuOpen) ? (
             <Link to="/dashboard" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
               <span className="bg-blue-600 p-1.5 rounded-lg">ST</span>
               SkillTrack
             </Link>
           ) : (
-            <Link to="/dashboard" className="bg-blue-600 p-2 rounded-lg mx-auto">ST</Link>
+            <Link to="/dashboard" className="bg-blue-600 p-2 rounded-lg mx-auto hidden md:block">ST</Link>
           )}
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="md:hidden text-slate-400 hover:text-white p-1"
+          >
+            <X size={24} />
+          </button>
         </div>
 
-        <nav className="flex-1 mt-4 px-3 space-y-1">
+        <nav className="flex-1 mt-4 px-3 space-y-1 overflow-y-auto">
           {NAVIGATION_ITEMS.map((item) => {
             const isActive = location.pathname === item.path;
             const isLocked = lockedPaths.has(item.path);
@@ -129,11 +163,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <span className={`${isActive ? 'text-white' : isLocked ? 'text-slate-600' : 'text-slate-400 group-hover:text-white'}`}>
                   {item.icon}
                 </span>
-                {isSidebarOpen && (
+                {(isSidebarOpen || isMobileMenuOpen) && (
                   <span className={`ml-3 font-medium flex-1 ${isLocked ? 'text-slate-600' : ''}`}>{item.name}</span>
                 )}
-                {isSidebarOpen && isLocked && (
+                {(isSidebarOpen || isMobileMenuOpen) && isLocked && (
                   <Lock size={14} className="text-slate-600 flex-shrink-0" />
+                )}
+                {/* Show labels only on desktop collapsed state via tooltip-like hidden text */}
+                {!isSidebarOpen && !isMobileMenuOpen && (
+                  <span className="hidden md:hidden">{item.name}</span>
                 )}
               </Link>
             );
@@ -146,7 +184,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             className="flex items-center w-full p-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
           >
             <LogOut size={20} />
-            {isSidebarOpen && <span className="ml-3 font-medium">Logout</span>}
+            {(isSidebarOpen || isMobileMenuOpen) && <span className="ml-3 font-medium">Logout</span>}
           </button>
         </div>
       </aside>
@@ -154,11 +192,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-20">
-          <div className="flex items-center gap-4">
+        <header className="h-14 md:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 z-20 flex-shrink-0">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden text-slate-500 hover:text-slate-800 p-1.5 rounded-md"
+            >
+              <Menu size={22} />
+            </button>
+            {/* Desktop sidebar toggle */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="text-slate-500 hover:text-slate-800 p-1 rounded-md"
+              className="hidden md:block text-slate-500 hover:text-slate-800 p-1 rounded-md"
             >
               {isSidebarOpen ? <Menu size={20} /> : <X size={20} />}
             </button>
@@ -175,7 +221,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   onFocus={() => setShowSearchResults(true)}
                   onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
                   placeholder="Search pages, resources..."
-                  className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-64"
+                  className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-48 lg:w-64"
                 />
               </form>
               {showSearchResults && searchResults.length > 0 && (
@@ -196,7 +242,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Notifications */}
             <div className="relative">
               <button
@@ -212,7 +258,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </button>
 
               {showNotifications && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden max-w-sm">
                   <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 className="font-bold text-slate-900">Notifications</h3>
                     {unreadCount > 0 && (
@@ -242,9 +288,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
                               !notif.read ? 'bg-blue-500' : 'bg-transparent'
                             }`}></div>
-                            <div>
+                            <div className="min-w-0">
                               <p className="text-sm font-bold text-slate-900">{notif.title}</p>
-                              <p className="text-xs text-slate-500 mt-0.5">{notif.message}</p>
+                              <p className="text-xs text-slate-500 mt-0.5 break-words">{notif.message}</p>
                               <p className="text-[10px] text-slate-400 mt-1">
                                 {new Date(notif.created_at).toLocaleDateString()}
                               </p>
@@ -258,18 +304,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
             </div>
 
-            <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
+            <div className="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
 
-            <Link to="/profile" className="flex items-center gap-3 cursor-pointer group">
+            <Link to="/profile" className="flex items-center gap-2 md:gap-3 cursor-pointer group">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
+                <p className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors truncate max-w-[120px] lg:max-w-none">
                   {displayName}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 truncate max-w-[120px] lg:max-w-none">
                   {profile?.target_role || 'Set your target role'}
                 </p>
               </div>
-              <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden font-bold text-sm">
+              <div className="h-9 w-9 md:h-10 md:w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden font-bold text-sm flex-shrink-0">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="object-cover w-full h-full" />
                 ) : (
@@ -281,7 +327,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc]">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-8 bg-[#f8fafc]">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
