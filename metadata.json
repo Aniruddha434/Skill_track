@@ -1,0 +1,9 @@
+
+{
+  "name": "SkillTrack – Smart Career Companion AI",
+  "description": "A professional AI-driven career guidance and job recommendation platform for students and job seekers, featuring skill assessment, resume analysis, and personalized career paths.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

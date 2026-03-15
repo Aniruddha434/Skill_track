@@ -1,0 +1,18 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/gemini-proxy/(.*)", "destination": "/api/gemini-proxy" },
+    { "source": "/api/jina-proxy/(.*)", "destination": "/api/jina-proxy" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/gemini-proxy.js": {
+      "maxDuration": 60
+    },
+    "api/jina-proxy.js": {
+      "maxDuration": 30
+    }
+  }
+}

@@ -1,0 +1,273 @@
+import React, { useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { NAVIGATION_ITEMS } from '../constants';
+import { useAuth } from '../contexts/AuthContext';
+import { useUserData } from '../contexts/UserDataContext';
+import { LogOut, Bell, Search, Menu, X, Check } from 'lucide-react';
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { profile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead } = useUserData();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  const isAuthPage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup';
+
+  if (isAuthPage) {
+    return <div className="min-h-screen">{children}</div>;
+  }
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    const searchMap: Record<string, string> = {
+      'dashboard': '/dashboard',
+      'profile': '/profile',
+      'assessment': '/assessment',
+      'skill': '/assessment',
+      'resume': '/resume',
+      'career': '/careers',
+      'job': '/jobs',
+      'gap': '/gaps',
+      'learning': '/learning',
+      'course': '/learning',
+      'interview': '/mock',
+      'mock': '/mock',
+    };
+
+    const query = searchQuery.toLowerCase();
+    for (const [key, path] of Object.entries(searchMap)) {
+      if (query.includes(key)) {
+        navigate(path);
+        setSearchQuery('');
+        setShowSearchResults(false);
+        return;
+      }
+    }
+    setShowSearchResults(false);
+  };
+
+  const searchResults = searchQuery.trim()
+    ? NAVIGATION_ITEMS.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'User';
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+  return (
+    <div className="flex h-screen bg-[#f8fafc] overflow-hidden">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          isSidebarOpen ? 'w-64' : 'w-20'
+        } bg-[#0f172a] text-white flex flex-col transition-all duration-300 ease-in-out z-30`}
+      >
+        <div className="p-6 flex items-center justify-between">
+          {isSidebarOpen ? (
+            <Link to="/dashboard" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+              <span className="bg-blue-600 p-1.5 rounded-lg">ST</span>
+              SkillTrack
+            </Link>
+          ) : (
+            <Link to="/dashboard" className="bg-blue-600 p-2 rounded-lg mx-auto">ST</Link>
+          )}
+        </div>
+
+        <nav className="flex-1 mt-4 px-3 space-y-1">
+          {NAVIGATION_ITEMS.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center p-3 rounded-lg transition-colors group ${
+                  isActive
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span className={`${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>
+                  {item.icon}
+                </span>
+                {isSidebarOpen && <span className="ml-3 font-medium">{item.name}</span>}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-slate-800">
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full p-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            <LogOut size={20} />
+            {isSidebarOpen && <span className="ml-3 font-medium">Logout</span>}
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Navbar */}
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-20">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="text-slate-500 hover:text-slate-800 p-1 rounded-md"
+            >
+              {isSidebarOpen ? <Menu size={20} /> : <X size={20} />}
+            </button>
+            <div className="relative hidden md:block">
+              <form onSubmit={handleSearch}>
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSearchResults(true);
+                  }}
+                  onFocus={() => setShowSearchResults(true)}
+                  onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+                  placeholder="Search pages, resources..."
+                  className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-64"
+                />
+              </form>
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full mt-2 w-full bg-white rounded-xl border border-slate-200 shadow-xl py-2 z-50">
+                  {searchResults.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => { setSearchQuery(''); setShowSearchResults(false); }}
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 text-sm text-slate-700 font-medium"
+                    >
+                      {item.icon}
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Notifications */}
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2 text-slate-500 hover:text-blue-600 transition-colors"
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden">
+                  <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                    <h3 className="font-bold text-slate-900">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllNotificationsRead}
+                        className="text-xs text-blue-600 font-bold hover:underline"
+                      >
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-[320px] overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-8 text-center text-slate-400 text-sm">
+                        No notifications yet
+                      </div>
+                    ) : (
+                      notifications.slice(0, 10).map((notif) => (
+                        <div
+                          key={notif.id}
+                          onClick={() => markNotificationRead(notif.id)}
+                          className={`p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer transition-colors ${
+                            !notif.read ? 'bg-blue-50/50' : ''
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                              !notif.read ? 'bg-blue-500' : 'bg-transparent'
+                            }`}></div>
+                            <div>
+                              <p className="text-sm font-bold text-slate-900">{notif.title}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">{notif.message}</p>
+                              <p className="text-[10px] text-slate-400 mt-1">
+                                {new Date(notif.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
+
+            <Link to="/profile" className="flex items-center gap-3 cursor-pointer group">
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
+                  {displayName}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {profile?.target_role || 'Set your target role'}
+                </p>
+              </div>
+              <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden font-bold text-sm">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Avatar" className="object-cover w-full h-full" />
+                ) : (
+                  initials
+                )}
+              </div>
+            </Link>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc]">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+
+      {/* Click outside to close notifications */}
+      {showNotifications && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setShowNotifications(false)}
+        ></div>
+      )}
+    </div>
+  );
+};
+
+export default Layout;
