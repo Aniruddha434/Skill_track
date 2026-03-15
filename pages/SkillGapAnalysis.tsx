@@ -4,6 +4,7 @@ import { Target, TrendingUp, AlertTriangle, BookOpen, Loader2, RefreshCw } from 
 import { analyzeSkillGaps } from '../services/geminiService';
 import { useUserData } from '../contexts/UserDataContext';
 import { useCache } from '../contexts/CacheContext';
+import FeatureGate, { useProfileGateRequirements } from '../components/FeatureGate';
 import type { SkillGap } from '../types';
 
 const SkillGapAnalysis: React.FC = () => {
@@ -57,7 +58,10 @@ const SkillGapAnalysis: React.FC = () => {
     return diff > 10 && diff <= 30;
   });
 
+  const gateRequirements = useProfileGateRequirements();
+
   return (
+    <FeatureGate featureName="Skill Gap Analysis" requirements={gateRequirements}>
     <div className="space-y-8 max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between gap-6">
         <div>
@@ -214,6 +218,7 @@ const SkillGapAnalysis: React.FC = () => {
         </div>
       )}
     </div>
+    </FeatureGate>
   );
 };
 

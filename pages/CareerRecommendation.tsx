@@ -3,6 +3,7 @@ import { ArrowUpRight, ShieldCheck, DollarSign, BrainCircuit, Loader2, RefreshCw
 import { getCareerRecommendations, generateCareerRoadmap } from '../services/geminiService';
 import { useUserData } from '../contexts/UserDataContext';
 import { useCache } from '../contexts/CacheContext';
+import FeatureGate, { useProfileGateRequirements } from '../components/FeatureGate';
 import type { Career } from '../types';
 
 const CareerRecommendation: React.FC = () => {
@@ -58,7 +59,10 @@ const CareerRecommendation: React.FC = () => {
     setLoadingRoadmap(null);
   };
 
+  const gateRequirements = useProfileGateRequirements();
+
   return (
+    <FeatureGate featureName="Career Match" requirements={gateRequirements}>
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="max-w-3xl">
@@ -192,6 +196,7 @@ const CareerRecommendation: React.FC = () => {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 };
 

@@ -4,6 +4,7 @@ import { fetchRealJobs } from '../services/jinaJobService';
 import type { ExperienceLevel } from '../services/jinaJobService';
 import { useUserData } from '../contexts/UserDataContext';
 import { useCache } from '../contexts/CacheContext';
+import FeatureGate, { useFullGateRequirements } from '../components/FeatureGate';
 import type { Job } from '../types';
 
 const EXPERIENCE_OPTIONS: { value: ExperienceLevel; label: string }[] = [
@@ -98,7 +99,10 @@ const JobRecommendation: React.FC = () => {
     }
   }, [searchQuery, jobs]);
 
+  const gateRequirements = useFullGateRequirements();
+
   return (
+    <FeatureGate featureName="Job Board" requirements={gateRequirements}>
     <div className="space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="min-w-0">
@@ -290,6 +294,7 @@ const JobRecommendation: React.FC = () => {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 };
 

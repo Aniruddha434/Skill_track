@@ -15,6 +15,9 @@ interface UserDataContextType {
   notifications: Notification[];
   unreadCount: number;
   loading: boolean;
+  // Feature gating: real counts from DB
+  assessmentCount: number;
+  hasResumeAnalysis: boolean;
   fetchProfile: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<{ error: string | null }>;
   saveAssessmentResult: (result: Omit<AssessmentResult, 'id' | 'user_id' | 'created_at'>) => Promise<{ error: string | null }>;
@@ -36,6 +39,8 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [assessmentCount, setAssessmentCount] = useState(0);
+  const [hasResumeAnalysis, setHasResumeAnalysis] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -69,10 +74,32 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (data) setNotifications(data as Notification[]);
   }, [user]);
 
+  // Fetch feature gating counts from DB
+  const fetchGatingData = useCallback(async () => {
+    if (!user) {
+      setAssessmentCount(0);
+      setHasResumeAnalysis(false);
+      return;
+    }
+    const [assessRes, resumeRes] = await Promise.all([
+      supabase
+        .from('assessment_results')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id),
+      supabase
+        .from('resume_analyses')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id),
+    ]);
+    setAssessmentCount(assessRes.count ?? 0);
+    setHasResumeAnalysis((resumeRes.count ?? 0) > 0);
+  }, [user]);
+
   useEffect(() => {
     fetchProfile();
     fetchNotifications();
-  }, [fetchProfile, fetchNotifications]);
+    fetchGatingData();
+  }, [fetchProfile, fetchNotifications, fetchGatingData]);
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user) return { error: 'Not authenticated' };
@@ -100,6 +127,9 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       });
 
     if (error) return { error: error.message };
+
+    // Update gating count
+    setAssessmentCount(prev => prev + 1);
 
     // Create notification
     await supabase.from('notifications').insert({
@@ -130,6 +160,9 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       });
 
     if (error) return { error: error.message };
+
+    // Update gating flag
+    setHasResumeAnalysis(true);
 
     // Update profile skills if we got new ones
     if (analysis.skills.length > 0 && profile) {
@@ -282,6 +315,8 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         notifications,
         unreadCount,
         loading,
+        assessmentCount,
+        hasResumeAnalysis,
         fetchProfile,
         updateProfile,
         saveAssessmentResult,

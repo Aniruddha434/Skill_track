@@ -3,6 +3,7 @@ import { ExternalLink, Play, Clock, Loader2, RefreshCw, BookOpen, Youtube } from
 import { getLearningRecommendations } from '../services/geminiService';
 import { useUserData } from '../contexts/UserDataContext';
 import { useCache } from '../contexts/CacheContext';
+import FeatureGate, { useProfileGateRequirements } from '../components/FeatureGate';
 import type { Course } from '../types';
 
 interface FreeResource {
@@ -81,7 +82,10 @@ const LearningRecommendation: React.FC = () => {
     }
   };
 
+  const gateRequirements = useProfileGateRequirements();
+
   return (
+    <FeatureGate featureName="Learning Hub" requirements={gateRequirements}>
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="max-w-3xl">
@@ -224,6 +228,7 @@ const LearningRecommendation: React.FC = () => {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 };
 

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { NAVIGATION_ITEMS } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserData } from '../contexts/UserDataContext';
-import { LogOut, Bell, Search, Menu, X, Check } from 'lucide-react';
+import { LogOut, Bell, Search, Menu, X, Check, Lock } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,7 +13,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { profile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead } = useUserData();
+  const { profile, notifications, unreadCount, markNotificationRead, markAllNotificationsRead, assessmentCount, hasResumeAnalysis } = useUserData();
+
+  // Determine which nav items are locked
+  const lockedPaths = useMemo(() => {
+    const hasSkills = (profile?.skills?.length ?? 0) > 0;
+    const hasTargetRole = !!profile?.target_role;
+    const profileReady = hasSkills && hasTargetRole;
+    const fullReady = profileReady && assessmentCount >= 2 && hasResumeAnalysis;
+
+    const locked = new Set<string>();
+    // Career Match, Skill Gaps, Learning Hub require profile ready
+    if (!profileReady) {
+      locked.add('/careers');
+      locked.add('/gaps');
+      locked.add('/learning');
+    }
+    // Job Board requires full readiness
+    if (!fullReady) {
+      locked.add('/jobs');
+    }
+    return locked;
+  }, [profile, assessmentCount, hasResumeAnalysis]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -92,6 +113,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <nav className="flex-1 mt-4 px-3 space-y-1">
           {NAVIGATION_ITEMS.map((item) => {
             const isActive = location.pathname === item.path;
+            const isLocked = lockedPaths.has(item.path);
             return (
               <Link
                 key={item.path}
@@ -99,13 +121,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className={`flex items-center p-3 rounded-lg transition-colors group ${
                   isActive
                     ? 'bg-blue-600 text-white'
+                    : isLocked
+                    ? 'text-slate-600 hover:bg-slate-800/50'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <span className={`${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>
+                <span className={`${isActive ? 'text-white' : isLocked ? 'text-slate-600' : 'text-slate-400 group-hover:text-white'}`}>
                   {item.icon}
                 </span>
-                {isSidebarOpen && <span className="ml-3 font-medium">{item.name}</span>}
+                {isSidebarOpen && (
+                  <span className={`ml-3 font-medium flex-1 ${isLocked ? 'text-slate-600' : ''}`}>{item.name}</span>
+                )}
+                {isSidebarOpen && isLocked && (
+                  <Lock size={14} className="text-slate-600 flex-shrink-0" />
+                )}
               </Link>
             );
           })}

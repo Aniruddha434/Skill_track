@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TrendingUp,
@@ -10,7 +10,14 @@ import {
   Sparkles,
   FileText,
   Video,
-  Loader2
+  Loader2,
+  Lock,
+  CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
+  Briefcase,
+  BarChart2,
+  BookOpen,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserData } from '../contexts/UserDataContext';
@@ -20,7 +27,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { profile, fetchDashboardData } = useUserData();
+  const { profile, fetchDashboardData, assessmentCount, hasResumeAnalysis } = useUserData();
   const [dashData, setDashData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -188,6 +195,14 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Feature Unlock Progress */}
+      <FeatureUnlockCard
+        profile={profile}
+        assessmentCount={assessmentCount}
+        hasResumeAnalysis={hasResumeAnalysis}
+        navigate={navigate}
+      />
+
       {/* Recent Assessments */}
       {dashData?.recentAssessments && dashData.recentAssessments.length > 0 && (
         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden glass-depth">
@@ -249,6 +264,116 @@ const StatCard = ({ icon, label, value, change, isPositive, color }: { icon: Rea
         <span className="text-3xl font-black text-slate-900 tracking-tight">{value}</span>
         <div className="text-xs mt-2 font-bold text-slate-500">
           {change}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Feature Unlock Progress Card
+const FeatureUnlockCard = ({
+  profile,
+  assessmentCount,
+  hasResumeAnalysis,
+  navigate,
+}: {
+  profile: any;
+  assessmentCount: number;
+  hasResumeAnalysis: boolean;
+  navigate: (path: string) => void;
+}) => {
+  const hasSkills = (profile?.skills?.length ?? 0) > 0;
+  const hasTargetRole = !!profile?.target_role;
+  const hasTwoAssessments = assessmentCount >= 2;
+
+  const steps = [
+    { label: 'Add skills to profile', done: hasSkills, action: '/profile' },
+    { label: 'Set a target role', done: hasTargetRole, action: '/profile' },
+    { label: `Complete 2 assessments (${Math.min(assessmentCount, 2)}/2)`, done: hasTwoAssessments, action: '/assessment' },
+    { label: 'Analyze your resume', done: hasResumeAnalysis, action: '/resume' },
+  ];
+
+  const completedCount = steps.filter(s => s.done).length;
+  const allDone = completedCount === steps.length;
+
+  // Features and their unlock status
+  const features = [
+    { name: 'Career Match', icon: <ShieldCheck size={16} />, unlocked: hasSkills && hasTargetRole },
+    { name: 'Skill Gaps', icon: <BarChart2 size={16} />, unlocked: hasSkills && hasTargetRole },
+    { name: 'Learning Hub', icon: <BookOpen size={16} />, unlocked: hasSkills && hasTargetRole },
+    { name: 'Job Board', icon: <Briefcase size={16} />, unlocked: allDone },
+  ];
+
+  if (allDone) return null; // Hide when all unlocked
+
+  return (
+    <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+      <div className="p-6 border-b border-slate-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Unlock All Features</h3>
+            <p className="text-sm text-slate-500 mt-1">Complete these steps to access all AI-powered tools</p>
+          </div>
+          <div className="text-right">
+            <span className="text-2xl font-black text-blue-600">{completedCount}/{steps.length}</span>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Steps Done</p>
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div className="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-blue-600 rounded-full transition-all duration-700"
+            style={{ width: `${(completedCount / steps.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+        {/* Steps */}
+        <div className="p-6 space-y-3">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Steps to Complete</h4>
+          {steps.map((step, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                step.done ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
+              }`}>
+                {step.done ? <CheckCircle2 size={14} /> : <span className="text-[10px] font-bold">{i + 1}</span>}
+              </div>
+              <span className={`text-sm flex-1 ${step.done ? 'text-green-700 line-through' : 'text-slate-700 font-medium'}`}>
+                {step.label}
+              </span>
+              {!step.done && (
+                <button
+                  onClick={() => navigate(step.action)}
+                  className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-0.5"
+                >
+                  Go <ArrowRight size={10} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Features */}
+        <div className="p-6 space-y-3">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Features</h4>
+          {features.map((feature, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                feature.unlocked ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
+              }`}>
+                {feature.unlocked ? feature.icon : <Lock size={12} />}
+              </div>
+              <span className={`text-sm font-medium ${feature.unlocked ? 'text-green-700' : 'text-slate-400'}`}>
+                {feature.name}
+              </span>
+              <span className={`ml-auto text-[10px] font-bold uppercase tracking-wider ${
+                feature.unlocked ? 'text-green-600' : 'text-slate-400'
+              }`}>
+                {feature.unlocked ? 'Unlocked' : 'Locked'}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
