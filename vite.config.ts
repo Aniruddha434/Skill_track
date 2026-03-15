@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => {
         'process.env.SUPABASE_URL': JSON.stringify(env.SUPABASE_URL),
         'process.env.SUPABASE_ANON_KEY': JSON.stringify(env.SUPABASE_ANON_KEY),
         'process.env.JINA_API_KEY': JSON.stringify(env.JINA_API_KEY),
+        'process.env.SITE_URL': JSON.stringify(env.SITE_URL || ''),
       },
       resolve: {
         alias: {

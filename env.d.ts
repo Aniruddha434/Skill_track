@@ -5,6 +5,7 @@ declare namespace NodeJS {
     GEMINI_API_KEY: string;
     SUPABASE_URL: string;
     SUPABASE_ANON_KEY: string;
+    SITE_URL: string;
   }
 }
 
@@ -13,6 +14,7 @@ declare var process: {
     GEMINI_API_KEY: string;
     SUPABASE_URL: string;
     SUPABASE_ANON_KEY: string;
+    SITE_URL: string;
     [key: string]: string;
   };
 };

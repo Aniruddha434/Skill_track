@@ -110,7 +110,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: 'Supabase is not configured. Please add SUPABASE_URL and SUPABASE_ANON_KEY to your .env.local file.' };
     }
     // Redirect to /#/dashboard after email verification
-    const redirectTo = `${window.location.origin}${window.location.pathname}#/dashboard`;
+    // Use SITE_URL env var for production (Vercel), fallback to current origin for dev
+    const siteBase = process.env.SITE_URL || `${window.location.origin}${window.location.pathname}`;
+    const redirectTo = `${siteBase.replace(/\/$/, '')}/#/dashboard`;
     const { error } = await supabase.auth.signUp({
       email,
       password,

@@ -42,7 +42,8 @@ const Signup: React.FC = () => {
     if (resendCooldown > 0 || resending) return;
     setResending(true);
     try {
-      const redirectTo = `${window.location.origin}${window.location.pathname}#/dashboard`;
+      const siteBase = process.env.SITE_URL || `${window.location.origin}${window.location.pathname}`;
+      const redirectTo = `${siteBase.replace(/\/$/, '')}/#/dashboard`;
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
