@@ -14,6 +14,16 @@ interface ScrapedJobRaw {
 
 export type ExperienceLevel = 'fresher' | 'junior' | 'mid' | 'senior' | 'any';
 
+type JobSource = 'LinkedIn' | 'Naukri' | 'Unstop' | 'Glassdoor' | 'Indeed' | 'Internshala' | 'Wellfound';
+
+interface SearchPlan {
+  source: JobSource;
+  query: string;
+  url: string;
+  parser: (md: string) => ScrapedJobRaw[];
+  location?: string;
+}
+
 // ============================================================
 // JINA FETCHER
 // ============================================================
@@ -258,6 +268,28 @@ function parseGlassdoor(md: string): ScrapedJobRaw[] {
 }
 
 // ============================================================
+// INDEED SCRAPER
+// ============================================================
+function buildIndeedUrl(query: string, location: string): string {
+  return `https://in.indeed.com/jobs?q=${encodeURIComponent(query)}&l=${encodeURIComponent(location)}`;
+}
+
+// ============================================================
+// INTERNSHALA SCRAPER
+// ============================================================
+function buildInternshalaUrl(query: string): string {
+  const slug = query.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return `https://internshala.com/jobs/keywords-${slug}`;
+}
+
+// ============================================================
+// WELLFOUND SCRAPER
+// ============================================================
+function buildWellfoundUrl(query: string, location: string): string {
+  return `https://wellfound.com/jobs?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+}
+
+// ============================================================
 // UTILS
 // ============================================================
 const KNOWN_SKILLS = [
@@ -270,9 +302,268 @@ const KNOWN_SKILLS = [
   'Ruby', 'Figma', 'Selenium', 'Jenkins', 'Terraform', 'Power BI', 'Tableau', 'Excel',
 ];
 
+function uniqueStrings(values: string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const value of values) {
+    const cleaned = value.replace(/\s+/g, ' ').trim();
+    if (!cleaned) continue;
+    const key = cleaned.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(cleaned);
+  }
+
+  return result;
+}
+
+function isLikelyJobTitle(title: string): boolean {
+  const cleaned = title.trim();
+  if (cleaned.length < 4 || cleaned.length > 120) return false;
+  if (/sign in|search|filter|sort|upload|salary guide|home page|privacy|terms/i.test(cleaned)) return false;
+
+  return /developer|engineer|designer|analyst|manager|intern|trainee|scientist|consultant|specialist|architect|administrator|associate|lead|qa|tester|product|devops|security/i.test(cleaned);
+}
+
+function splitContextLines(text: string): string[] {
+  return text
+    .split('\n')
+    .map(line => line.replace(/[*_#>`|]/g, ' ').replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
+function extractLocationFromLines(lines: string[]): string {
+  for (const line of lines) {
+    if (
+      line.length < 100 &&
+      /remote|hybrid|onsite|work from home|bangalore|bengaluru|hyderabad|mumbai|pune|chennai|noida|gurgaon|gurugram|delhi|kolkata|india|united states|uk|europe|singapore/i.test(line)
+    ) {
+      return line;
+    }
+  }
+  return '';
+}
+
+function extractSalaryFromLines(lines: string[]): string {
+  for (const line of lines) {
+    if (/₹|\$|€|£|lpa|lac|lakh|per year|per month|\/year|\/month|a year|a month/i.test(line) && line.length < 120) {
+      return line;
+    }
+  }
+  return '';
+}
+
+function extractPostedFromLines(lines: string[]): string {
+  for (const line of lines) {
+    if (/\d+\+?\s*(day|week|month|hour)s?\s+ago|today|just posted|posted/i.test(line)) {
+      return line;
+    }
+  }
+  return '';
+}
+
+function extractCompanyFromLines(lines: string[], title: string): string {
+  const normalizedTitle = title.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  for (const line of lines) {
+    const normalizedLine = line.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!normalizedLine || normalizedLine === normalizedTitle) continue;
+    if (line.length < 2 || line.length > 80) continue;
+    if (/remote|hybrid|onsite|work from home|today|ago|posted|apply|save|easy apply|salary|year|month|full[- ]time|part[- ]time|contract|internship/i.test(line)) continue;
+    if (/developer|engineer|designer|analyst|manager|intern|scientist|architect|consultant/i.test(line)) continue;
+    if (!/[a-z]/i.test(line)) continue;
+    return line;
+  }
+
+  return '';
+}
+
+function parseJobsFromLinkMatches(md: string, source: JobSource, linkPattern: RegExp): ScrapedJobRaw[] {
+  const jobs: ScrapedJobRaw[] = [];
+  const seenLinks = new Set<string>();
+  let match: RegExpExecArray | null;
+
+  while ((match = linkPattern.exec(md)) !== null) {
+    const title = match[1].trim();
+    const link = match[2].trim();
+
+    if (!isLikelyJobTitle(title) || seenLinks.has(link)) continue;
+    seenLinks.add(link);
+
+    const start = Math.max(0, match.index - 180);
+    const end = Math.min(md.length, match.index + match[0].length + 500);
+    const lines = splitContextLines(md.substring(start, end));
+
+    const company = extractCompanyFromLines(lines, title);
+    const location = extractLocationFromLines(lines);
+    const salary = extractSalaryFromLines(lines);
+    const posted = extractPostedFromLines(lines);
+
+    jobs.push({ title, company, location, link, salary, posted, source });
+  }
+
+  return jobs;
+}
+
+function parseIndeed(md: string): ScrapedJobRaw[] {
+  return parseJobsFromLinkMatches(md, 'Indeed', /\[([^\]]{4,120})\]\((https?:\/\/(?:[a-z]+\.)?indeed\.com\/[^)]+)\)/g);
+}
+
+function parseInternshala(md: string): ScrapedJobRaw[] {
+  return parseJobsFromLinkMatches(md, 'Internshala', /\[([^\]]{4,120})\]\((https?:\/\/internshala\.com\/(?:job|internship)\/detail\/[^)]+)\)/g);
+}
+
+function parseWellfound(md: string): ScrapedJobRaw[] {
+  return parseJobsFromLinkMatches(md, 'Wellfound', /\[([^\]]{4,120})\]\((https?:\/\/wellfound\.com\/jobs\/[^)]+)\)/g);
+}
+
+function buildSearchQueries(skills: string[], targetRole: string, experienceLevel: ExperienceLevel): string[] {
+  const baseRole = targetRole.trim() || (skills.length > 0 ? `${skills[0]} Developer` : 'Software Developer');
+  const lcRole = baseRole.toLowerCase();
+  const queries = [
+    baseRole,
+    /developer|engineer|designer|analyst|manager|intern/i.test(baseRole) ? baseRole : `${baseRole} developer`,
+    /engineer/i.test(baseRole) ? baseRole : `${baseRole} engineer`,
+    ...skills.slice(0, 3).map(skill =>
+      /developer|engineer|designer|analyst|manager/i.test(skill) ? skill : `${skill} developer`
+    ),
+  ];
+
+  if (/frontend/i.test(lcRole)) {
+    queries.push('React Developer', 'Frontend Engineer');
+  }
+  if (/backend/i.test(lcRole)) {
+    queries.push('Backend Engineer', 'Node.js Developer');
+  }
+  if (/full\s*stack/i.test(lcRole)) {
+    queries.push('Full Stack Developer', 'Software Engineer');
+  }
+  if (/data/i.test(lcRole)) {
+    queries.push('Data Analyst', 'Data Scientist');
+  }
+
+  if (experienceLevel === 'fresher' || experienceLevel === 'junior') {
+    queries.push(`${baseRole} intern`, `${baseRole} internship`, `${baseRole} trainee`);
+  }
+
+  return uniqueStrings(queries).slice(0, 6);
+}
+
+function buildLocationVariants(location: string): string[] {
+  const normalized = location.trim() || 'India';
+  const parts = normalized.split(',').map(part => part.trim()).filter(Boolean);
+  const variants = [normalized];
+
+  if (parts.length > 1) variants.push(parts[0]);
+  if (!/remote/i.test(normalized)) variants.push('Remote');
+  if (!/india/i.test(normalized)) variants.push('India');
+
+  return uniqueStrings(variants).slice(0, 3);
+}
+
+function buildSearchPlans(
+  skills: string[],
+  targetRole: string,
+  location: string,
+  experienceLevel: ExperienceLevel,
+): SearchPlan[] {
+  const queries = buildSearchQueries(skills, targetRole, experienceLevel);
+  const locations = buildLocationVariants(location);
+  const plans: SearchPlan[] = [];
+
+  for (const query of queries.slice(0, 4)) {
+    for (const loc of locations.slice(0, 2)) {
+      plans.push({
+        source: 'LinkedIn',
+        query,
+        location: loc,
+        url: buildLinkedInUrl(query, loc, experienceLevel),
+        parser: parseLinkedIn,
+      });
+    }
+  }
+
+  for (const query of queries.slice(0, 4)) {
+    plans.push({
+      source: 'Naukri',
+      query,
+      url: buildNaukriUrl(query, experienceLevel),
+      parser: parseNaukri,
+    });
+  }
+
+  for (const query of queries.slice(0, 4)) {
+    plans.push({
+      source: 'Unstop',
+      query,
+      url: buildUnstopUrl(query),
+      parser: parseUnstop,
+    });
+  }
+
+  for (const query of queries.slice(0, 3)) {
+    plans.push({
+      source: 'Glassdoor',
+      query,
+      url: buildGlassdoorUrl(query, experienceLevel),
+      parser: parseGlassdoor,
+    });
+  }
+
+  for (const query of queries.slice(0, 4)) {
+    for (const loc of locations.slice(0, 2)) {
+      plans.push({
+        source: 'Indeed',
+        query,
+        location: loc,
+        url: buildIndeedUrl(query, loc),
+        parser: parseIndeed,
+      });
+    }
+  }
+
+  for (const query of queries.slice(0, 3)) {
+    plans.push({
+      source: 'Internshala',
+      query,
+      url: buildInternshalaUrl(query),
+      parser: parseInternshala,
+    });
+  }
+
+  for (const query of queries.slice(0, 3)) {
+    for (const loc of locations.slice(0, 2)) {
+      plans.push({
+        source: 'Wellfound',
+        query,
+        location: loc,
+        url: buildWellfoundUrl(query, loc),
+        parser: parseWellfound,
+      });
+    }
+  }
+
+  return plans;
+}
+
 function extractSkillsFromTitle(title: string): string[] {
   const t = title.toLowerCase();
   return KNOWN_SKILLS.filter(s => t.includes(s.toLowerCase())).slice(0, 5);
+}
+
+function dedupeRawJobs(scraped: ScrapedJobRaw[]): ScrapedJobRaw[] {
+  const seen = new Set<string>();
+
+  return scraped.filter((job) => {
+    const key = job.link
+      ? `link:${job.link.trim().toLowerCase()}`
+      : `meta:${job.title.toLowerCase().replace(/[^a-z0-9]/g, '')}-${job.company.toLowerCase().replace(/[^a-z0-9]/g, '')}-${job.location.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function convertToJobs(scraped: ScrapedJobRaw[], userSkills: string[]): Job[] {
@@ -309,37 +600,50 @@ export async function fetchRealJobs(
   location: string = 'India',
   experienceLevel: ExperienceLevel = 'fresher',
 ): Promise<Job[]> {
-  // Build a clean query — just the role, keep it short for better search results
-  const role = targetRole || (skills.length > 0 ? `${skills[0]} developer` : 'software developer');
-  const fresherSuffix = (experienceLevel === 'fresher') ? ' fresher' : '';
-  const query = role + fresherSuffix;
+  const role = targetRole || (skills.length > 0 ? `${skills[0]} Developer` : 'Software Developer');
+  const searchPlans = buildSearchPlans(skills, role, location, experienceLevel);
 
-  // Build URLs for each site
-  const urls = {
-    linkedin: buildLinkedInUrl(query, location, experienceLevel),
-    naukri: buildNaukriUrl(role, experienceLevel),
-    unstop: buildUnstopUrl(role),
-    glassdoor: buildGlassdoorUrl(role, experienceLevel),
-  };
+  console.log(
+    'Scraping jobs with expanded search plans:',
+    searchPlans.map(plan => ({ source: plan.source, query: plan.query, location: plan.location || '-', url: plan.url }))
+  );
 
-  console.log('Scraping jobs from:', urls);
-
-  // Scrape all sites in parallel
-  const results = await Promise.allSettled([
-    jinaFetch(urls.linkedin).then(md => parseLinkedIn(md)).catch(() => [] as ScrapedJobRaw[]),
-    jinaFetch(urls.naukri).then(md => parseNaukri(md)).catch(() => [] as ScrapedJobRaw[]),
-    jinaFetch(urls.unstop).then(md => parseUnstop(md)).catch(() => [] as ScrapedJobRaw[]),
-    jinaFetch(urls.glassdoor).then(md => parseGlassdoor(md)).catch(() => [] as ScrapedJobRaw[]),
-  ]);
+  const results = await Promise.allSettled(
+    searchPlans.map(async (plan) => {
+      const md = await jinaFetch(plan.url);
+      return {
+        ...plan,
+        jobs: plan.parser(md),
+      };
+    })
+  );
 
   const allRaw: ScrapedJobRaw[] = [];
-  const sourceNames = ['LinkedIn', 'Naukri', 'Unstop', 'Glassdoor'];
-  results.forEach((r, i) => {
-    if (r.status === 'fulfilled' && r.value.length > 0) {
-      console.log(`${sourceNames[i]}: found ${r.value.length} jobs`);
-      allRaw.push(...r.value);
+  const sourceTotals: Record<JobSource, number> = {
+    LinkedIn: 0,
+    Naukri: 0,
+    Unstop: 0,
+    Glassdoor: 0,
+    Indeed: 0,
+    Internshala: 0,
+    Wellfound: 0,
+  };
+
+  results.forEach((result, index) => {
+    const plan = searchPlans[index];
+
+    if (result.status === 'fulfilled') {
+      const found = result.value.jobs.length;
+      sourceTotals[plan.source] += found;
+
+      if (found > 0) {
+        console.log(`${plan.source} [${plan.query}${plan.location ? ` | ${plan.location}` : ''}]: found ${found} jobs`);
+        allRaw.push(...result.value.jobs);
+      } else {
+        console.warn(`${plan.source} [${plan.query}${plan.location ? ` | ${plan.location}` : ''}]: no jobs found`);
+      }
     } else {
-      console.warn(`${sourceNames[i]}: ${r.status === 'rejected' ? r.reason : 'no jobs found'}`);
+      console.warn(`${plan.source} [${plan.query}${plan.location ? ` | ${plan.location}` : ''}]:`, result.reason);
     }
   });
 
@@ -348,8 +652,12 @@ export async function fetchRealJobs(
     return [];
   }
 
+  console.log('Expanded search totals by source:', sourceTotals);
+
+  const uniqueRaw = dedupeRawJobs(allRaw);
+
   // Convert to Job type
-  const allJobs = convertToJobs(allRaw, skills);
+  const allJobs = convertToJobs(uniqueRaw, skills);
 
   // Deduplicate by normalized title+company
   const seen = new Set<string>();

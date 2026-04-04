@@ -109,7 +109,7 @@ const JobRecommendation: React.FC = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Job Opportunities</h1>
           <p className="text-slate-500 flex items-center gap-1 text-sm">
             <Globe size={14} className="flex-shrink-0" />
-            <span className="truncate">Real jobs from LinkedIn, Naukri, Unstop & Glassdoor{profile?.skills.length ? ` -- matched against your ${profile.skills.length} skills.` : '.'}</span>
+            <span className="truncate">Expanded search across LinkedIn, Naukri, Unstop, Glassdoor, Indeed, Internshala and Wellfound using multiple role and location variations{profile?.skills.length ? ` -- matched against your ${profile.skills.length} skills.` : '.'}</span>
           </p>
         </div>
       </div>
@@ -191,8 +191,8 @@ const JobRecommendation: React.FC = () => {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <Loader2 className="w-10 h-10 text-blue-600 animate-spin mx-auto mb-4" />
-            <p className="text-slate-500 font-medium">Scraping jobs from LinkedIn, Naukri, Unstop & Glassdoor...</p>
-            <p className="text-slate-400 text-sm mt-1">This may take 10-15 seconds as we fetch from multiple sites</p>
+            <p className="text-slate-500 font-medium">Searching across LinkedIn, Naukri, Unstop, Glassdoor, Indeed, Internshala and Wellfound...</p>
+            <p className="text-slate-400 text-sm mt-1">This may take a bit longer because we try multiple role and location variations</p>
           </div>
         </div>
       ) : error ? (
@@ -247,13 +247,16 @@ const JobRecommendation: React.FC = () => {
                       )}
                       {/* Source badge */}
                       {(() => {
-                        const src = job.description.match(/Source:\s*(LinkedIn|Naukri|Unstop|Glassdoor)/);
+                        const src = job.description.match(/Source:\s*(LinkedIn|Naukri|Unstop|Glassdoor|Indeed|Internshala|Wellfound)/);
                         if (!src) return null;
                         const colors: Record<string, string> = {
                           LinkedIn: 'bg-blue-50 text-blue-700 border-blue-100',
                           Naukri: 'bg-purple-50 text-purple-700 border-purple-100',
                           Unstop: 'bg-orange-50 text-orange-700 border-orange-100',
                           Glassdoor: 'bg-teal-50 text-teal-700 border-teal-100',
+                          Indeed: 'bg-sky-50 text-sky-700 border-sky-100',
+                          Internshala: 'bg-amber-50 text-amber-700 border-amber-100',
+                          Wellfound: 'bg-emerald-50 text-emerald-700 border-emerald-100',
                         };
                         return (
                           <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${colors[src[1]] || 'bg-slate-50 text-slate-600 border-slate-100'}`}>
